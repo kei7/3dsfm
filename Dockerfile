@@ -1,4 +1,4 @@
-FROM nvidia/cuda:8.0-cudnn7-devel-ubuntu16.04
+FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu16.04
 
 MAINTAINER asano <kei950120@gmail.com>
 
@@ -46,6 +46,10 @@ ENV HOME /root
 #ENV NOTEBOOK_HOME /notebooks
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 #ENV PATH /opt/conda/bin:$PATH
+RUN cd ~
+RUN git clone https://github.com/kei7/dotfiles.git
+RUN cd dotfiles
+RUN ./install.sh
 
 RUN mkdir /home/repos && cd /home/repos
 
