@@ -40,7 +40,7 @@ RUN apt-get update --fix-missing && apt-get -y install \
                    libopencv-dev \
                    libcgal-dev libcgal-qt5-dev \
                    freeglut3-dev libglew-dev libglfw3-dev \
-                   libqt5-dev
+                   meshlab
 USER root
 ENV HOME /root
 #ENV NOTEBOOK_HOME /notebooks
@@ -88,4 +88,4 @@ RUN mkdir openMVS_build && cd openMVS_build
 RUN cmake . ../openMVS -DCMAKE_BUILD_TYPE=RELEASE -DVCG_ROOT="($main_path)/vcglib" -DBUILD_SHARED_LIBS=ON -DOpenMVS_USE_CUDA=OFF -DOpenMVS_USE_BREAKPAD=OFF
 
 #Install OpenMVS library (optional):
-make -j2 && make install
+RUN make -j2 && make install
