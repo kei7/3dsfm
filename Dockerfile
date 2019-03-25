@@ -40,6 +40,7 @@ RUN apt-get update --fix-missing && apt-get -y install \
                    libopencv-dev \
                    libcgal-dev libcgal-qt5-dev \
                    freeglut3-dev libglew-dev libglfw3-dev \
+                   libqt4-dev \
                    meshlab
 USER root
 ENV HOME /root
@@ -68,7 +69,7 @@ RUN main_path=`pwd`
 #Eigen (Required)
 RUN hg clone https://bitbucket.org/eigen/eigen#3.2
 RUN mkdir eigen_build && cd eigen_build
-RUN cmake . ../eigen
+#RUN cmake . ../eigen
 #RUN make && make install
 RUN cd ..
 
@@ -78,14 +79,14 @@ RUN git clone https://github.com/cdcseacave/VCG.git vcglib
 #Ceres (Required)
 RUN git clone https://ceres-solver.googlesource.com/ceres-solver ceres-solver
 RUN mkdir ceres_build && cd ceres_build
-RUN cmake . ../ceres-solver/ -DMINIGLOG=ON -DBUILD_TESTING=OFF -DBUILD_EXAMPLES=OFF
+#RUN cmake . ../ceres-solver/ -DMINIGLOG=ON -DBUILD_TESTING=OFF -DBUILD_EXAMPLES=OFF
 #RUN make -j2 && make install
 RUN cd ..
 
 #OpenMVS
 RUN git clone https://github.com/cdcseacave/openMVS.git openMVS
 RUN mkdir openMVS_build && cd openMVS_build
-RUN cmake . ../openMVS -DCMAKE_BUILD_TYPE=RELEASE -DVCG_ROOT="($main_path)/vcglib" -DBUILD_SHARED_LIBS=ON -DOpenMVS_USE_CUDA=OFF -DOpenMVS_USE_BREAKPAD=OFF
+#RUN cmake . ../openMVS -DCMAKE_BUILD_TYPE=RELEASE -DVCG_ROOT="($main_path)/vcglib" -DBUILD_SHARED_LIBS=ON -DOpenMVS_USE_CUDA=OFF -DOpenMVS_USE_BREAKPAD=OFF
 
 #Install OpenMVS library (optional):
 #RUN make -j2 && make install
