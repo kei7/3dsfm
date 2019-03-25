@@ -57,7 +57,7 @@ RUN mkdir /home/repos && cd /home/repos
 RUN git clone --recursive https://github.com/openMVG/openMVG.git
 RUN mkdir openMVG_build && cd openMVG_build
 RUN cmake -DCMAKE_BUILD_TYPE=RELEASE . ../openMVG/src/
-RUN make -j2
+#RUN make -j2
 
 #openMVS
 #Prepare and empty machine for building:
@@ -69,7 +69,7 @@ RUN main_path=`pwd`
 RUN hg clone https://bitbucket.org/eigen/eigen#3.2
 RUN mkdir eigen_build && cd eigen_build
 RUN cmake . ../eigen
-RUN make && sudo make install
+#RUN make && make install
 RUN cd ..
 
 #VCGLib (Required)
@@ -79,7 +79,7 @@ RUN git clone https://github.com/cdcseacave/VCG.git vcglib
 RUN git clone https://ceres-solver.googlesource.com/ceres-solver ceres-solver
 RUN mkdir ceres_build && cd ceres_build
 RUN cmake . ../ceres-solver/ -DMINIGLOG=ON -DBUILD_TESTING=OFF -DBUILD_EXAMPLES=OFF
-RUN make -j2 && sudo make install
+#RUN make -j2 && make install
 RUN cd ..
 
 #OpenMVS
@@ -88,4 +88,4 @@ RUN mkdir openMVS_build && cd openMVS_build
 RUN cmake . ../openMVS -DCMAKE_BUILD_TYPE=RELEASE -DVCG_ROOT="($main_path)/vcglib" -DBUILD_SHARED_LIBS=ON -DOpenMVS_USE_CUDA=OFF -DOpenMVS_USE_BREAKPAD=OFF
 
 #Install OpenMVS library (optional):
-RUN make -j2 && make install
+#RUN make -j2 && make install
