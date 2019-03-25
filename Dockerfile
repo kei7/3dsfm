@@ -49,7 +49,7 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 RUN cd ~
 RUN git clone https://github.com/kei7/dotfiles.git
 RUN cd dotfiles
-RUN ./install.sh
+#RUN ./install.sh
 
 RUN mkdir /home/repos && cd /home/repos
 
