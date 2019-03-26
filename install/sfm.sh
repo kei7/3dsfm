@@ -7,9 +7,7 @@ IMGDIRNAME="heart_model"
 ##file preparation
 mkdir ../openMVG/src/software/SfM/input
 #cp ./model.py.in ./make_model.py.in
-cat ./model.py.in | sed "s#@OPENMVG_SOFTWARE_SFM_SRC_DIR@#/home/repos/openMVG_build/Linux-x86_64-RELEASE#g" > ./${MAKEMODEL_NAME}.py.in
-cat ./${MAKEMODEL_NAME}.py.in | sed "s#@OPENMVG_SOFTWARE_SFM_BUILD_DIR#/home/repos/openMVG_BUILD/Linux-x86_64-RELEASE#g" > ./${MAKEMODEL_NAME}.py.in
-cat ./${MAKEMODEL_NAME}.py.in | sed "s#@IMGSRC@#${IMGDIRNAME}#g" > ./${MAKEMODEL_NAME}.py.in
+cat ./model.py.in | sed -e "s#@OPENMVG_SOFTWARE_SFM_SRC_DIR@#/home/repos/openMVG_build/Linux-x86_64-RELEASE#g" -e "s#@OPENMVG_SOFTWARE_SFM_BUILD_DIR#/home/repos/openMVG_BUILD/Linux-x86_64-RELEASE#g" -e "s#@IMGSRC@#${IMGDIRNAME}#g" > ./${MAKEMODEL_NAME}.py.in
 mv ./${MAKEMODEL_NAME}.py.in ../openMVG/src/software/SfM/
 cp -r -i ${IMGDIRPATH} ../openMVG/src/software/SfM/input/
 cp -r -i ${IMGDIRPATH} ../openMVS_build/bin/undistorted_images/
