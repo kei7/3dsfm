@@ -13,7 +13,7 @@ MVGEXEC="src/software/SfM"
 mkdir ${MVGBUILDMAIN}/${MVGEXEC}/input
 #cp ./model.py.in ./make_model.py.in
 cat ./model.py.in | sed -e "s#@OPENMVG_SOFTWARE_SFM_BUILD_DIR@#/home/repos/openMVG_build/Linux-x86_64-RELEASE#g" -e "s#@OPENMVG_SOFTWARE_SFM_SRC_DIR#/home/repos/openMVG/src/software/SfM#g" -e "s#@IMGSRC@#${IMGDIRNAME}#g" > ./${MAKEMODEL_NAME}.py
-mv ./${MAKEMODEL_NAME}.py ../openMVG/src/software/SfM/
+mv ./${MAKEMODEL_NAME}.py ${MVGBUILDMAIN}/${MVGEXEC}/
 cp -r ${IMGDIRPATH} ${MVGBUILDMAIN}/${MVGEXEC}/input/
 cp -r ${IMGDIRPATH} ${MVSBUILDMAIN}/undistorted_images/
 #execute
