@@ -16,7 +16,7 @@ cp -r -i ${IMGDIRPATH} ../openMVS_build/bin/undistorted_images/
 #execute
 python ../openMVG/src/software/SfM/${MAKEMODEL_NAME}.py.in
 # data export 
-../openMVG_build/Linux-x86_64-RELEASE/openMVG_main_openMVG2openMVS -i ../openMVG/src/software/SfM/${IMGDIRNAME}/out/reconstruction_sequential/sfm_data.bin -o ../openMVG/src/software/SfM/input/${IMGDIRNAME}/out/reconstruction_sequential/scene.mvs
+../openMVG_build/Linux-x86_64-RELEASE/openMVG_main_openMVG2openMVS -i ../openMVG/src/software/SfM/input/${IMGDIRNAME}/out/reconstruction_sequential/sfm_data.bin -o ../openMVG/src/software/SfM/input/${IMGDIRNAME}/out/reconstruction_sequential/scene.mvs
 #openmvs change data
 ../openMVS_build/bin/DensifyPointCloud ../openMVG/src/software/SfM/input/${IMGDIRNAME}/out/reconstruction_sequential/scene.mvs
 #mesh reconstruction
