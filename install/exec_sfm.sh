@@ -6,7 +6,7 @@ IMGDIRPATH="/mnt/Omer/Project/04.ExTRaMapping/ModelData"
 IMGDIRNAME="heart_model"
 MVGBUILDMAIN="/home/repos/openMVG_build/Linux-x86_64-RELEASE"
 MVSBUILDMAIN="/home/repos/openMVS_build/bin"
-MVGEXEC="src/software/SfM"
+MVGEXEC="../software/SfM"
 
 
 ##file preparation
