@@ -2,12 +2,17 @@
 
 ##edit this
 MAKEMODEL_NAME="make_model"
-IMGDIRPATH="/mnt/Omer/Project/04.ExTRaMapping/ModelData/heart_model"
+IMGDIRPATH="/mnt/Omer/Project/04.ExTRaMapping/ModelData"
 IMGDIRNAME="heart_model"
+MVGBUILDMAIN="/home/repos/openMVG_build/Linux-x86_64-RELEASE"
+MVSBUILDMAIN="/home/repos/openMVS_build/bin"
+EXECDIR="../software/SfM"
+
+
 ##file preparation
 mkdir ../openMVG/src/software/SfM/input
 #cp ./model.py.in ./make_model.py.in
-cat ./model.py.in | sed -e "s#@OPENMVG_SOFTWARE_SFM_SRC_DIR@#/home/repos/openMVG_build/Linux-x86_64-RELEASE#g" -e "s#@OPENMVG_SOFTWARE_SFM_BUILD_DIR#/home/repos/openMVG_BUILD/Linux-x86_64-RELEASE#g" -e "s#@IMGSRC@#${IMGDIRNAME}#g" > ./${MAKEMODEL_NAME}.py.in
+cat ./model.py.in | sed -e "s#@OPENMVG_SOFTWARE_SFM_BUILD_DIR@#/home/repos/openMVG_build/Linux-x86_64-RELEASE#g" -e "s#@OPENMVG_SOFTWARE_SFM_SRC_DIR#/home/repos/openMVG/src/software/SfM#g" -e "s#@IMGSRC@#${IMGDIRNAME}#g" > ./${MAKEMODEL_NAME}.py.in
 mv ./${MAKEMODEL_NAME}.py.in ../openMVG/src/software/SfM/
 cp -r -i ${IMGDIRPATH} ../openMVG/src/software/SfM/input/
 cp -r -i ${IMGDIRPATH} ../openMVS_build/bin/undistorted_images/
