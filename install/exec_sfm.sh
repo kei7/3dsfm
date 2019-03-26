@@ -3,7 +3,7 @@
 ##edit this
 MAKEMODEL_NAME="make_model"
 IMGDIRPATH="/mnt/Omer/Project/04.ExTRaMapping/ModelData"
-IMGDIRNAME="heart_model"
+IMGDIRNAME="heart_model2"
 MVGBUILDMAIN="/home/repos/openMVG_build"
 MVSBUILDMAIN="/home/repos/openMVS_build/bin"
 MVGEXEC="software/SfM"
@@ -26,5 +26,6 @@ ${MVSBUILDMAIN}/DensifyPointCloud ${MVGBUILDMAIN}/${MVGEXEC}/input/${IMGDIRNAME}
 ${MVSBUILDMAIN}/ReconstructMesh ${MVGBUILDMAIN}/${MVGEXEC}/input/${IMGDIRNAME}/out/reconstruction_sequential/scene_dense.mvs 
 #texturemesh
 ${MVSBUILDMAIN}/TextureMesh ${MVGBUILDMAIN}/${MVGEXEC}/input/${IMGDIRNAME}/out/reconstruction_sequential/scene_dense_mesh.mvs
-mkdir ${IMGDIRPATH}/../AnalysisResult/${IMGDIRNAME}
+mkdir ${IMGDIRPATH}/AnalysisResult/${IMGDIRNAME}
 cp ${MVGBUILDMAIN}/${MVGEXEC}/input/${IMGDIRNAME}/out/reconstruction_sequential/*.ply ${IMGDIRPATH}/AnalysisResult/${IMGDIRNAME}/
+cp ${MVGBUILDMAIN}/${MVGEXEC}/input/${IMGDIRNAME}/out/reconstruction_sequential/*.ply ${IMGDIRPATH}/AnalysisResult/${IMGDIRNAME}
