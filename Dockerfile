@@ -51,7 +51,7 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 RUN cd ~
 RUN git clone https://github.com/kei7/dotfiles.git
 #RUN cd dotfiles
-#RUN ./install.sh
+RUN dotfiles/install.sh
 
 RUN mkdir /home/repos
 #RUN cd /home/repos
@@ -96,3 +96,4 @@ RUN mkdir /home/repos/openMVS_build
 
 #Install OpenMVS library (optional):
 #RUN make -j2 && make install
+RUN git clone https://github.com/kei7/execute_SfM /home/repos/exec_SfM
