@@ -1,0 +1,2 @@
+interface.h,main_openMVG2openMVS is at openMVG/src/SfM/software/export/
+main_IncrementalSfM.cpp is at openMVG/src/SfM/software/SfM

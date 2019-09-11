@@ -1,0 +1,10 @@
+version: '2'
+services:
+  adjango:
+    build:
+      context: ./
+    image: nvidia/cuda:8.0-cudnn7-devel-ubuntu16.04
+    container_name: asano_3dsfm_devel
+    volumes:
+      - ./:/home/repos/install
+      - /mnt:/mnt
