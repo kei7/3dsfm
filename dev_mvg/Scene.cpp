@@ -276,8 +276,6 @@ bool Scene::SaveInterface(const String & fileName) const
 		write_for_test << "	platformID " << im_obj.platformID << std::endl;
 		write_for_test << "	cameraID " << im_obj.cameraID << std::endl;
 	}
-	
-	return true;
 	////
 	// serialize out the current state
 	if (!ARCHIVE::SerializeSave(obj, fileName))
@@ -376,8 +374,6 @@ bool Scene::Load(const String& fileName, bool bImport)
 	FOREACH(ID, images) {
 		Image& imageData = images[ID];
 		if (imageData.poseID == NO_ID)
-			continue;
-		if (imageData.height!=1024)
 			continue;
 		imageData.UpdateCamera(platforms);
 		++nCalibratedImages;
