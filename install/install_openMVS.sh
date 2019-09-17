@@ -1,4 +1,5 @@
 #!/bin/bash
+cd ..
 #eigen
 cd ..
 #$main_path=`/home/repos`
