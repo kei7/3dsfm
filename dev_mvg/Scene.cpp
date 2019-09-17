@@ -267,17 +267,17 @@ bool Scene::SaveInterface(const String & fileName) const
 	////written by asano
 	std::string name_of_file = "test_camera.txt";
 	std::ofstream write_for_test;
-	write_for_test(name_of_file, std::ios::out);
+	write_for_test.open(name_of_file, std::ios::out);
 
-	FOREACH(i, obj.images) {
-		im_obj = obj.images[i];
+	FOREACH(i,images) {
+		MVS::Interface::Image& im_obj = obj.images[i];
 		write_for_test << "image_name " << im_obj.name << std::endl;
 		write_for_test << "	pose_ID " << im_obj.poseID << std::endl;
 		write_for_test << "	platformID " << im_obj.platformID << std::endl;
 		write_for_test << "	cameraID " << im_obj.cameraID << std::endl;
 	}
 	
-	return save
+	return true;
 	////
 	// serialize out the current state
 	if (!ARCHIVE::SerializeSave(obj, fileName))
