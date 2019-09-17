@@ -276,6 +276,8 @@ bool Scene::SaveInterface(const String & fileName) const
 		write_for_test << "	platformID " << im_obj.platformID << std::endl;
 		write_for_test << "	cameraID " << im_obj.cameraID << std::endl;
 	}
+	
+	return save
 	////
 	// serialize out the current state
 	if (!ARCHIVE::SerializeSave(obj, fileName))
