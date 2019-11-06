@@ -36,11 +36,8 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/filtered_graph.hpp>
 #include <boost/graph/connected_components.hpp>
-#include <fstream>
-#include <iostream>
 
 using namespace MVS;
-using namespace std;
 
 
 // D E F I N E S ///////////////////////////////////////////////////
@@ -197,18 +194,6 @@ struct MeshTexture {
 		Label label; // view index
 		Mesh::FaceIdxArr faces; // indices of the faces contained by the patch
 		RectsBinPack::Rect rect; // the bounding box in the view containing the patch
-		
-			#ifdef _USE_BOOST
-			    // implement BOOST serialization
-			template <class Archive>
-			void serialize(Archive& ar, const unsigned int /*version*/) {
-			ar & label;
-			ar & faces;
-			ar & rect;
-			
-		}
-		#endif
-			
 	};
 	typedef cList<TexturePatch,const TexturePatch&,1,1024,FIndex> TexturePatchArr;
 
@@ -224,17 +209,6 @@ struct MeshTexture {
 				inline bool operator == (uint32_t _idxSeamVertex) const {
 					return (idxSeamVertex == _idxSeamVertex);
 				}
-				
-					#ifdef _USE_BOOST
-									// implement BOOST serialization
-					template <class Archive>
-					void serialize(Archive& ar, const unsigned int /*version*/) {
-					ar & idxSeamVertex;
-					ar & idxFace;
-					
-				}
-				#endif
-					
 			};
 			typedef cList<Edge,const Edge&,0,4,uint32_t> Edges;
 
@@ -247,18 +221,6 @@ struct MeshTexture {
 			inline bool operator == (uint32_t _idxPatch) const {
 				return (idxPatch == _idxPatch);
 			}
-			
-				#ifdef _USE_BOOST
-							// implement BOOST serialization
-				template <class Archive>
-				void serialize(Archive& ar, const unsigned int /*version*/) {
-				ar & idxPatch;
-				ar & proj;
-				ar & edges;
-				
-			}
-			#endif
-				
 		};
 		typedef cList<Patch,const Patch&,1,4,uint32_t> Patches;
 
@@ -283,17 +245,6 @@ struct MeshTexture {
 				return patches[i0].idxPatch < patches[i1].idxPatch;
 			});
 		}
-		
-			#ifdef _USE_BOOST
-			    // implement BOOST serialization
-			template <class Archive>
-			void serialize(Archive& ar, const unsigned int /*version*/) {
-			ar & idxVertex;
-			ar & patches;
-			
-		}
-		#endif
-			
 	};
 	typedef cList<SeamVertex,const SeamVertex&,1,256,uint32_t> SeamVertices;
 
@@ -433,14 +384,12 @@ public:
 	bool FaceOutlierDetection(FaceDataArr& faceDatas, float fOutlierThreshold) const;
 	#endif
 
-	void BkpTexture();
-	void LoadBkpTexture();
 	bool FaceViewSelection(float fOutlierThreshold, float fRatioDataSmoothness);
 
 	void CreateSeamVertices();
 	void GlobalSeamLeveling();
 	void LocalSeamLeveling();
-	void GenerateTexture(bool bGlobalSeamLeveling, bool bLocalSeamLeveling, unsigned nTextureSizeMultiple, unsigned nRectPackingHeuristic, Pixel8U colEmpty, bool reTexture);
+	void GenerateTexture(bool bGlobalSeamLeveling, bool bLocalSeamLeveling, unsigned nTextureSizeMultiple, unsigned nRectPackingHeuristic, Pixel8U colEmpty);
 
 	template <typename PIXEL>
 	static inline PIXEL RGB2YCBCR(const PIXEL& v) {
@@ -575,7 +524,7 @@ bool MeshTexture::ListCameraFaces(FaceDataViewArr& facesDatas, float fOutlierThr
 	FOREACH(idxView, images) {
 	#endif
 		Image& imageData = images[idxView];
-		if (imageData.height != 1024 || imageData.height != 1024)
+		if (imageData.height != 1024)
 			continue;
 		if (!imageData.IsValid()) {
 			++progress;
@@ -877,97 +826,6 @@ bool MeshTexture::FaceOutlierDetection(FaceDataArr& faceDatas, float thOutlier) 
 	return true;
 }
 #endif
-
-// backup variables before global seam leveling
-void MeshTexture::BkpTexture()
-{
-	// create backup directory
-	if (mkdir("atlas_backup", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == -1)
-	{
-		if (errno == EEXIST) {
-					// alredy exists
-				
-		}
-		else {
-					// something else
-			ABORT("cannot create sessionnamefolder error:" << strerror(errno));
-			
-		}
-	}
-	
-	ofstream ofscomponents("atlas_backup/components");
-	{
-		boost::archive::text_oarchive oa(ofscomponents);
-		oa << components;
-	}
-	
-		ofstream ofsmapIdxPatch("atlas_backup/mapIdxPatch");
-	{
-		boost::archive::text_oarchive oa(ofsmapIdxPatch);
-		oa << mapIdxPatch;
-	}
-	
-		ofstream ofsseamVertices("atlas_backup/seamVertices");
-	{
-		boost::archive::text_oarchive oa(ofsseamVertices);
-		oa << seamVertices;
-	}
-	
-		ofstream ofstexturePatches("atlas_backup/texturePatches");
-	{
-		boost::archive::text_oarchive oa(ofstexturePatches);
-		oa << texturePatches;
-	}
-	
-		ofstream ofsscene("atlas_backup/scene");
-	{
-		boost::archive::text_oarchive oa(ofsscene);
-		oa << scene;
-	}
-}
-
-
-// load backed-up variables for global seam leveling
-void MeshTexture::LoadBkpTexture()
-{
-	{
-			// empty variable
-		seamVertices.Empty();
-			// open an archive for input
-		std::ifstream ifs("atlas_backup/seamVertices");
-		boost::archive::text_iarchive ia(ifs);
-			// read class state from archive
-		ia >> seamVertices;
-	}
-	
-	{
-		components.Empty();
-		std::ifstream ifs("atlas_backup/components");
-		boost::archive::text_iarchive ia(ifs);
-		ia >> components;
-	}
-	
-	{
-		mapIdxPatch.Empty();
-		std::ifstream ifs("atlas_backup/mapIdxPatch");
-		boost::archive::text_iarchive ia(ifs);
-		ia >> mapIdxPatch;
-	}
-	
-	{
-		texturePatches.Empty();
-		std::ifstream ifs("atlas_backup/texturePatches");
-		boost::archive::text_iarchive ia(ifs);
-		ia >> texturePatches;
-	}
-	
-	{
-		std::ifstream ifs("atlas_backup/scene");
-		boost::archive::text_iarchive ia(ifs);
-		ia >> scene;
-	}
-}
-
 
 bool MeshTexture::FaceViewSelection(float fOutlierThreshold, float fRatioDataSmoothness)
 {
@@ -1928,7 +1786,7 @@ void MeshTexture::LocalSeamLeveling()
 	}
 }
 
-+void MeshTexture::GenerateTexture(bool bGlobalSeamLeveling, bool bLocalSeamLeveling, unsigned nTextureSizeMultiple, unsigned nRectPackingHeuristic, Pixel8U colEmpty, bool reTexture)
+void MeshTexture::GenerateTexture(bool bGlobalSeamLeveling, bool bLocalSeamLeveling, unsigned nTextureSizeMultiple, unsigned nRectPackingHeuristic, Pixel8U colEmpty)
 {
 	// project patches in the corresponding view and compute texture-coordinates and bounding-box
 	const int border(2);
@@ -1989,15 +1847,7 @@ void MeshTexture::LocalSeamLeveling()
 	if (texturePatches.GetSize() > 2 && (bGlobalSeamLeveling || bLocalSeamLeveling)) {
 		// create seam vertices and edges
 		CreateSeamVertices();
-		if (reTexture == 0) {
-			BkpTexture();
-			
-		}
-		else {
-			LoadBkpTexture();
-			
-		}
-		
+
 		// perform global seam leveling
 		if (bGlobalSeamLeveling) {
 			TD_TIMER_STARTD();
@@ -2079,46 +1929,6 @@ void MeshTexture::LocalSeamLeveling()
 		const float invNorm(1.f/(float)(textureSize-1));
 		textureDiffuse.create(textureSize, textureSize);
 		textureDiffuse.setTo(cv::Scalar(colEmpty.b, colEmpty.g, colEmpty.r));
-		
-					// backup patches/atlas
-			if (reTexture == 0) {
-				ofstream ofsrects("atlas_backup/rects");
-						// save data to archive
-				{
-					boost::archive::text_oarchive oa(ofsrects);
-					oa << rects;
-				}
-			
-				ofstream ofstexturePatchesFINAL("atlas_backup/texturePatchesFINAL");
-				{
-					boost::archive::text_oarchive oa(ofstexturePatchesFINAL);
-									// write class instance to archive
-						oa << texturePatches;
-				}
-			
-			}
-			else {
-						// load backed-up patches/atlas
-				{
-					rects.Empty();
-								// open an archive for input
-					std::ifstream ifs("atlas_backup/rects");
-					boost::archive::text_iarchive ia(ifs);
-									// read class state from archive
-						ia >> rects;
-				}
-				{
-					texturePatches.Empty();
-									// open an archive for input
-						std::ifstream ifs("atlas_backup/texturePatchesFINAL");
-					boost::archive::text_iarchive ia(ifs);
-									// read class state from archive
-						ia >> texturePatches;
-				}
-			
-			}
-		
-
 		#ifdef TEXOPT_USE_OPENMP
 		#pragma omp parallel for schedule(dynamic)
 		for (int_t i=0; i<(int_t)texturePatches.GetSize(); ++i) {
@@ -2161,7 +1971,7 @@ void MeshTexture::LocalSeamLeveling()
 }
 
 // texture mesh
-bool Scene::TextureMesh(unsigned nResolutionLevel, unsigned nMinResolution, float fOutlierThreshold, float fRatioDataSmoothness, bool bGlobalSeamLeveling, bool bLocalSeamLeveling, unsigned nTextureSizeMultiple, unsigned nRectPackingHeuristic, Pixel8U colEmpty, bool reTexture)
+bool Scene::TextureMesh(unsigned nResolutionLevel, unsigned nMinResolution, float fOutlierThreshold, float fRatioDataSmoothness, bool bGlobalSeamLeveling, bool bLocalSeamLeveling, unsigned nTextureSizeMultiple, unsigned nRectPackingHeuristic, Pixel8U colEmpty)
 {
 	MeshTexture texture(*this, nResolutionLevel, nMinResolution);
 
@@ -2176,9 +1986,10 @@ bool Scene::TextureMesh(unsigned nResolutionLevel, unsigned nMinResolution, floa
 	// generate the texture image and atlas
 	{
 		TD_TIMER_STARTD();
-		texture.GenerateTexture(bGlobalSeamLeveling, bLocalSeamLeveling, nTextureSizeMultiple, nRectPackingHeuristic, colEmpty, reTexture);
+		texture.GenerateTexture(bGlobalSeamLeveling, bLocalSeamLeveling, nTextureSizeMultiple, nRectPackingHeuristic, colEmpty);
 		DEBUG_EXTRA("Generating texture atlas and image completed: %u patches, %u image size (%s)", texture.texturePatches.GetSize(), mesh.textureDiffuse.width(), TD_TIMER_GET_FMT().c_str());
 	}
+
 	return true;
 } // TextureMesh
 /*----------------------------------------------------------------*/
