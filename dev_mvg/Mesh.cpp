@@ -1433,9 +1433,12 @@ bool Mesh::Save(const String& fileName, const cList<String>& comments, bool bBin
 		ret = SaveOBJ(fileName);
 	else
 		ret = SavePLY(ext != _T(".ply") ? String(fileName+_T(".ply")) : fileName, comments, bBinary);
+		ret2 = SaveText(ext != _T(".ply") ? String(fileName + _T(".ply")) : fileName);
 	if (!ret)
 		return false;
 	DEBUG_EXTRA("Mesh saved: %u vertices, %u faces (%s)", vertices.GetSize(), faces.GetSize(), TD_TIMER_GET_FMT().c_str());
+	if (!ret2)
+		DEBUG_EXTRA("Texture saved");
 	return true;
 }
 // export the mesh as a PLY file
@@ -1525,27 +1528,27 @@ bool Mesh::SaveText(const String& fileName) const
 {
 	String textname;
 	textname = Util::getFileFullName(fileName) + _T(".dat");
-		ASSERT(!textName.IsEmpty());
+	ASSERT(!textName.IsEmpty());
 	Util::ensureFolder(textName);
-
+	
 	if (faceTexcoords.IsEmpty()) {
 		return false;
-
+		
 	}
 	else {
 		//create text file object
 		ofstream fout;
 		fout.open(textName);
 		if (fout.fall())) {
-			DEBUG_EXTRA("error: can not create the texture file");
-			return false;
+		DEBUG_EXTRA("error: can not create the texture file");
+		return false;
 		}
 		ASSERT(faceTexcoords.GetSize() == faces.GetSize() * 3);
 		// export the array of texture
 		FOREACH(f, faces) {
 			std::cout << f << "," << facestexcoords[f] << "," << facestexcoords[f + 1] << "," << facestexcoords[f + 1] << std::endl;
 		}
-	fout.close();
+		fout.close();
 	}
 	return true;
 }
