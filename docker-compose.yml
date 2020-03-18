@@ -3,9 +3,9 @@ services:
   adjango:
     build:
       context: ./
-    image: asano_3dsfm_devel:latest
-    container_name: asano_3dsfm_devel
+    image: 3dsfm:latest
+    container_name: 3dsfm_latest
     volumes:
-      - ./:/home/repos/install
+      - ./:/home/repos/3dsfm
       - /mnt:/mnt
     tty: true

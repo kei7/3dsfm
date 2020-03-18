@@ -41,8 +41,8 @@ RUN apt-get update --fix-missing && apt-get -y install \
                    libcgal-dev libcgal-qt5-dev \
                    freeglut3-dev libglew-dev libglfw3-dev \
                    libqt4-dev \
-                   meshlab \
-                   graphviz-dev graphviz
+                   graphviz-dev graphviz \
+                   python-pyexiv2
 USER root
 ENV HOME /root
 #ENV NOTEBOOK_HOME /notebooks
