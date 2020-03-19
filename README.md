@@ -10,17 +10,11 @@ docker-compose up -d --build
 
 # 2. ライブラリの準備
 ##  必要なライブラリをクローンし変更を加えビルドする
-デフォルトでは /home/repos/install にDockerfileなどのフォルダが共有される  
-それ以外のフォルダがある場合は削除する  
+デフォルトでは /home/repos/3dsfmリポジトリのホームディレクトリが共有される  
+3dsfm/dev_mvg/link.shを実行すればファイル変更が加えられる  
 以下、/home/repos をホームディレクトリとする  
 ### 2.1. OpenMVG
 Structure from Motion を行うためのライブラリ  
-#### クローン
-
-```
-git clone --recursive https://github.com/openMVG/openMVG.git
-```
-
 #### ファイルの変更
 dev_mvg/main_ComputeMatches.cpp  
 dev_mvg/main_incrementalSfM.cpp に変更済みファイルあり  
@@ -50,23 +44,17 @@ Save(sfmEngine.Get_SfM_Data(),
 #### ビルド(Nはコア数)
 
 ```
-mkdir openMVG_build
 cd openMVG_build
 cmake -DCMAKE_BUILD_TYPE=RELEASE . ../openMVG/src/
 make -jN
 ```
 
 ### 2.2. Eigen
-#### クローン
-
-```
-hg clone https://bitbucket.org/eigen/eigen#3.2
-```
+openMVSの依存ライブラリ
 
 #### ビルド
 
 ```
-mkdir eigen_build
 cd eigen_build
 cmake . ../eigen3.2
 make -jN
@@ -74,24 +62,19 @@ make install
 ```
 
 ### 2.3. Vcglib
-#### クローン
-
-```
-git clone https://github.com/cdcseacave/VCG.git
-```
+openMVSの依存ライブラリ
 
 ### 2.4. Ceres
-#### クローン
+openMVSの依存ライブラリ  
+ceres-solveを以下のバージョンにチェックアウト  
 
 ```
-git clone https://ceres-solver.googlesource.com/ceres-solver
 git checkout ba62397d80b2d7d34c3cca5e75f1f154ad8e41bb
 ```
 
 #### ビルド
 
 ```
-mkdir ceres_build
 cd ceres_build
 cmake . ../ceres-solver/ -DMINIGLOG=ON -DBUILD_TESTING=OFF -DBUILD_EXAMPLES=OFF
 make -jN
@@ -99,10 +82,10 @@ make install
 ```
 
 ### 2.5. OpenMVS
-#### 繰り返しテクスチャを行う場合のクローン(デフォルト推奨)
+#### 繰り返しテクスチャを行う場合のリポジトリ(デフォルト推奨)
+以下のバージョンにチェックアウト
 
 ```
-git clone https://github.com/thunders82/openMVS.git
 git checkout 6bdc5ecbf45b540d408ded4592191dd30c3f69cf
 ```
 
@@ -127,7 +110,6 @@ Image& imageData = images[idxView];
 #### ビルド
 
 ```
-mkdir openMVS_build
 cd /home/repos/openMVS_build
 cmake . ../openMVS -DCMAKE_BUILD_TYPE=RELEASE -DVCG_ROOT="/home/repos/vcglib" -DBUILD_SHARED_LIBS=OFF -DOpenMVS_USE_CUDA=OFF -DOpenMVS_USE_BREAKPAD=OFF
 make -jN
