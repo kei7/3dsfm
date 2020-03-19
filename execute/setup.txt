@@ -1,5 +1,5 @@
 MVGBUILDMAIN="/home/repos/openMVG_build"
-MVSBUILDMAIN="/home/repos/openMVS_retexture_up_build/bin"
+MVSBUILDMAIN="/home/repos/openMVS_build/bin"
 MVGEXEC="software/SfM"
 MVGRELEASE="Linux-x86_64-RELEASE"
 MAKEMODEL_NAME="exec_model"
