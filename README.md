@@ -85,6 +85,7 @@ git clone https://github.com/cdcseacave/VCG.git
 
 ```
 git clone https://ceres-solver.googlesource.com/ceres-solver
+git checkout ba62397d80b2d7d34c3cca5e75f1f154ad8e41bb
 ```
 
 #### ビルド
@@ -134,6 +135,7 @@ make install
 ```
 
 ## 2.6. Meshlab 
+ローカルのPCにて
 http://www.meshlab.net/  
 からインストールファイルをインストールし実行  
 
