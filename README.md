@@ -12,7 +12,7 @@ docker-compose.ymlの内容でコンテナ作成
 docker-compose.ymlのあるフォルダにて以下のコマンドを実行
 
 ```
-dokcer-compose build --no-cache
+docker-compose build --no-cache
 docker-compose up -d 
 ```
 
