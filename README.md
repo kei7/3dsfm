@@ -115,7 +115,7 @@ git checkout 6bdc5ecbf45b540d408ded4592191dd30c3f69cf
 
 #### OpenMVS メインストリームのGitリポジトリ
 https://github.com/cdcseacave/openMVS.git
-#### ファイル変更
+#### ファイル変更内容
 SceneTexture.cpp:L576を編集。textureに使う画像サイズに制限をかける(textureに使用したい画像に応じて数字は編集)  
 
 ```
