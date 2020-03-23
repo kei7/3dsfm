@@ -59,42 +59,34 @@ RUN cd ~
 #build openMVG
 RUN git clone --recursive https://github.com/openMVG/openMVG.git /home/repos/openMVG
 RUN mkdir /home/repos/openMVG_build
-#&& cd openMVG_build
-#RUN cmake -DCMAKE_BUILD_TYPE=RELEASE . ../openMVG/src/
-#RUN make -j2
+RUN cd /home/repos/openMVG_build && cmake -DCMAKE_BUILD_TYPE=RELEASE . ../openMVG/src/ && make -j2
 
 #openMVS
 #Prepare and empty machine for building:
 #sudo apt-get update -qq && sudo apt-get install -qq
-#RUN cd /home/repos
-#RUN main_path=`pwd`
-
+RUN cd /home/repos && main_path=`pwd`  
 #Eigen (Required)
 RUN hg clone https://bitbucket.org/eigen/eigen#3.2 /home/repos/eigen3.2
 RUN mkdir /home/repos/eigen_build
-#&& cd eigen_build
-#RUN cmake . ../eigen
-#RUN make && make install
+RUN cd /home/repos/eigen_build && cmake . ../eigen && make -j2 && make install
 #RUN cd ..
 
 #VCGLib (Required)
 RUN git clone https://github.com/cdcseacave/VCG.git /home/repos/vcglib
 
 #Ceres (Required)
-RUN git clone https://ceres-solver.googlesource.com/ceres-solver /home/repos/ceres-solver
+RUN git clone https://ceres-solver.googlesource.com/ceres-solver /home/repos/ceres-solver 
 RUN mkdir /home/repos/ceres_build
-#&& cd ceres_build
-#RUN cmake . ../ceres-solver/ -DMINIGLOG=ON -DBUILD_TESTING=OFF -DBUILD_EXAMPLES=OFF
-#RUN make -j2 && make install
+RUN cd /home/repos/ceres-solver && git checkout ba62397d80b2d7d34c3cca5e75f1f154ad8e41bb
+RUN cd /home/repos/ceres_build && cmake . ../ceres-solver/ -DMINIGLOG=ON -DBUILD_TESTING=OFF -DBUILD_EXAMPLES=OFF && make -j2 && make install
 #RUN cd ..
 
 #OpenMVS
 RUN git clone https://github.com/thunders82/openMVS.git /home/repos/openMVS
-#RUN cd /home/repos/openMVS && git checkout 6bdc5ecbf45b540d408ded4592191dd30c3f69cf
+RUN cd /home/repos/openMVS && git checkout 6bdc5ecbf45b540d408ded4592191dd30c3f69cf
 RUN mkdir /home/repos/openMVS_build
-#&& cd openMVS_build
-#RUN cmake . ../openMVS -DCMAKE_BUILD_TYPE=RELEASE -DVCG_ROOT="($main_path)/vcglib" -DBUILD_SHARED_LIBS=ON -DOpenMVS_USE_CUDA=OFF -DOpenMVS_USE_BREAKPAD=OFF
+RUN cd /home/repos/openMVS_build && cmake . ../openMVS -DCMAKE_BUILD_TYPE=RELEASE -DVCG_ROOT="($main_path)/vcglib" -DBUILD_SHARED_LIBS=ON -DOpenMVS_USE_CUDA=OFF -DOpenMVS_USE_BREAKPAD=OFF && make -j2 && make install
 
 #Install OpenMVS library (optional):
-#RUN make -j2 && make install
+
 #RUN git clone https://github.com/kei7/execute_SfM /home/repos/exec_SfM
