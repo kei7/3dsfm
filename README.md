@@ -25,14 +25,21 @@ docker exec -it [コンテナ名] /bin/bash
 # 2. ライブラリの準備
 ##  必要なライブラリをクローンし変更を加えビルドする
 デフォルトでは[クローンしたリポジトリ]/3dsfm:/home/repos/3dsfmとなるようにリポジトリのホームディレクトリと共有される  
-3dsfm/dev_mvg/link.shを実行すればファイル変更が加えられる  
+
+```
+cd /home/repos/3dsfm/dev_mvg/link.sh
+/bin/bash link.sh
+```
+
+を実行すればファイル変更が加えられる  
 以下、/home/repos をホームディレクトリとする  
 
 ### 2.1. OpenMVG
 Structure from Motion を行うためのライブラリ  
-#### ファイルの変更
-3dsfm/dev_mvg/main_ComputeMatches.cpp  
-3dsfm/dev_mvg/main_incrementalSfM.cpp に変更済みファイルあり  
+#### ファイルの変更内容
+
+/home/repos/3dsfm/dev_mvg/main_ComputeMatches.cpp  
+/home/repos/3dsfm/dev_mvg/main_incrementalSfM.cpp に変更済みファイルあり  
 main_ComputeMatches:L503に以下を追加しmatches.f.txtが出力されるように変更  
 
 ```
@@ -56,12 +63,12 @@ Save(sfmEngine.Get_SfM_Data(),
 
 編集後のファイルは~/openMVG/src/software/SfM/にコピー  
 
-#### ビルド(Nはコア数)
+#### ビルド
 
 ```
-cd openMVG_build
+cd /home/repos/openMVG_build
 cmake -DCMAKE_BUILD_TYPE=RELEASE . ../openMVG/src/
-make -jN
+make -j2
 ```
 
 ### 2.2. Eigen
@@ -70,9 +77,9 @@ openMVSの依存ライブラリ
 #### ビルド
 
 ```
-cd eigen_build
+cd /home/repos/eigen_build
 cmake . ../eigen3.2
-make -jN
+make -j2
 make install
 ```
 
@@ -81,18 +88,19 @@ openMVSの依存ライブラリ
 
 ### 2.4. Ceres
 openMVSの依存ライブラリ  
-ceres-solveを以下のバージョンにチェックアウト  
+ceres-solverを以下のバージョンにチェックアウト  
 
 ```
+cd /home/repos/ceres-solver
 git checkout ba62397d80b2d7d34c3cca5e75f1f154ad8e41bb
 ```
 
 #### ビルド
 
 ```
-cd ceres_build
+cd /home/repos/ceres_build
 cmake . ../ceres-solver/ -DMINIGLOG=ON -DBUILD_TESTING=OFF -DBUILD_EXAMPLES=OFF
-make -jN
+make -j2
 make install
 ```
 
@@ -101,6 +109,7 @@ make install
 以下のバージョンにチェックアウト
 
 ```
+cd /home/repos/openMVS
 git checkout 6bdc5ecbf45b540d408ded4592191dd30c3f69cf
 ```
 
@@ -127,7 +136,7 @@ Image& imageData = images[idxView];
 ```
 cd /home/repos/openMVS_build
 cmake . ../openMVS -DCMAKE_BUILD_TYPE=RELEASE -DVCG_ROOT="/home/repos/vcglib" -DBUILD_SHARED_LIBS=OFF -DOpenMVS_USE_CUDA=OFF -DOpenMVS_USE_BREAKPAD=OFF
-make -jN
+make -j2
 make install
 ```
 
