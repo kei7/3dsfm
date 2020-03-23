@@ -147,14 +147,17 @@ http://www.meshlab.net/
 
 # 3. 再構成用画像の準備
 ## 3.1. 画像のコピー
-読み込む画像はjpg画像に直して  
+読み込む画像はjpg画像に直して~/openMVG_build/software/SfM/input/[フォルダ名]/images/[画像名].jpg  
+となるようにしてコピーする必要がある  
+/home/repos/3dsfm/executeにある  
+setup.txtを編集する  
 
 ```
 vi /home/repos/3dsfm/execute/setup.txt  
 ```
 
 ```
-$INPUT=[画像フォルダへの絶対パス] 
+INPUT=[画像フォルダへの絶対パス] 
 ```
  
 ```
@@ -164,28 +167,36 @@ cp copy.sh
 ~/openMVG_build/software/SfM/input/[フォルダ名]/images/[画像名].jpg
 となるようにしてコピーする 必要がある
 
-## 3.2. カメラ素子サイズの編集
+## 3.2. カメラ素子サイズについて
+以下のことに留意する
 
 ```
 vi /home/repos/3dsfm/execute/sensor_width_camera_database.txt  
 ```
-とし、最後を以下のように追加  
+
+とすると以下のようになっている  
 
 ```
-Camera-A;6.167
-Camera-B:6.166
+Camera-A;6.167 #例1
+Camera-B:6.166 #例2
 [形状推定カメラの機種名];[素子サイズ(mm)]
 [高速度カメラの機種名1];[素子サイズ(mm)]
 [高速度カメラの機種名2];[素子サイズ(mm)]
 [高速度カメラの機種名3];[素子サイズ(mm)]
 ```
 
-この時、使用するカメラ機種や素子サイズが同じ場合でも、Camera-A:6.167,Camera-B:6.166のように異なる機種名、素子サイズにしなければ複数のカメラが同じ内部パラメータを持つように設定されてしまうので注意する。  
+この時、使用するカメラ機種名や素子サイズが同じ場合でも、Camera-A;6.167,Camera-B;6.166のようにする  
+異なる機種名、素子サイズにしなければ複数のカメラが同じ内部パラメータを持つように設定されてしまうので注意する。  
+
 ## 3.3. exifデータの編集
-再構成時には  
-/home/repos/3dsfm/execute/chexif.py  
-を実行して再構成用画像のexifデータを書き換える。  
-そこで、必要に応じてL21以降を書き換える。  
+
+
+```
+vi /home/repos/3dsfm/execute/chexif.py  
+```
+
+とし必要に応じてL21以降を書き換える。  
+chexif.pyは画像のexifデータ(メタデータ)を書き換える
 
 ```
 data["Exif.Image.Model"] = "SO-01K" #撮影カメラ機種名。sensor_width_camera_database.txtに追加したカメラ機種名と一致させる
@@ -194,12 +205,15 @@ data["Exif.Photo.PixelXDimension"] = 1920 #画像の横サイズ
 data["Exif.Photo.PixelYDimension"] = 1080 #画像の縦サイズ
 ```
 
+このとき、
+
 ## 3.4. カメラ内部パラメータの計算
 /home/repos/3dsfm/execute/calibrate.py  
 を実行して形状推定カメラ1台と高速度カメラ3台それぞれについて内部パラメータを計算する。  
 必要に応じてL8,9のキャリブレーションパターンを変更する。  
 
 ```
+cd /home/repos/3dsfm/execute
 python calibrate.py [キャリブレーション画像フォルダへのパス]
 ```
 
@@ -228,11 +242,16 @@ d =  [ 9.89016633e-01 -6.64973985e+01 -3.98764708e-03 -7.26857600e-02
   1.24415171e+03]
 ```
 
-このキャリブレーション結果のKとdが再構成に必要となる。  
+このキャリブレーション結果のKとdが再構成に必要となるのでエディタなどにコピーする  
 
 # 4. 再構成の実行
 ## 4.0. 設定ファイルの編集
+/home/repos/3dsfm/executeにある
 setup.txtを編集する  
+
+```
+vi /home/repos/3dsfm/execute/setup.txt
+```
 
 ```
 MVGBUILDMAIN="/home/repos/openMVG_build"
