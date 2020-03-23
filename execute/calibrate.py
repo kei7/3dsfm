@@ -1,9 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import numpy
 import cv2
-from glob import glob
-import os 
+import glob
+import os,sys 
 
-src_patha = argv[1]
+src_patha = sys.argv[1]
 
 square_size = 0.8      # 正方形パターン1つの一辺のサイズ
 pattern_size = (3,3)  # 模様のサイズ
