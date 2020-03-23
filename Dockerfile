@@ -44,6 +44,7 @@ RUN apt-get update --fix-missing && apt-get -y install \
                    graphviz-dev graphviz \
                    python-pyexiv2
                    python-numpy
+                   python-opencv
 USER root
 ENV HOME /root
 #ENV NOTEBOOK_HOME /notebooks
