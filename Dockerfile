@@ -43,6 +43,7 @@ RUN apt-get update --fix-missing && apt-get -y install \
                    libqt4-dev \
                    graphviz-dev graphviz \
                    python-pyexiv2
+                   python-numpy
 USER root
 ENV HOME /root
 #ENV NOTEBOOK_HOME /notebooks
