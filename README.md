@@ -283,6 +283,12 @@ chexif.py、model1.py.in
 は以下のようになっている  
 
 ```
+cd  /home/repos/3dsfm/execute
+vi sfm_data.json
+```
+
+
+```
 {
     "sfm_data_version": "0.3",
     "root_path": "/home/repos/openMVG_build/software/SfM/input/20191203-1_3/images",
@@ -340,16 +346,23 @@ chexif.py、model1.py.in
 }
 ```
 
-"view"に記載されている各画像の"id_intrinsic"の数字と、"intrinsics"に記載されいてる"key"の数字が対応している。  
+"views"は入力画像について  
+"intrinsics"は画像撮影に用いたカメラの内部パラメータについてを示している  
+
+"view"に記載されている各画像の"id_intrinsic"の数字と、"intrinsics"に記載されいてる"key"の数字が対応している  
 exifデータを正しく編集できていれば、形状推定カメラ1台と高速度カメラ3台を使った場合、"intrinsics"のkeyが4つあるはずである。  
-そこで3.4.で計算した内部パラメータKとdから内部パラメータを入力する。  
-Kの(1.1)成分と(2.2)成分からfocallengthを計算し入力  
-Kの(1,3)成分と(2,3)成分からprincipal_pointを入力  
-dの第1第2戦分をdisto_k3の第1第2成分に入力する  
+
+そこで3.4.で計算した内部パラメータKとdから各画像に対応する内部パラメータを入力する。  
+Kの(1,1)成分と(2,2)成分からからfocallengthを計算し入力  
+"focal_length" = {[(1,1)成分]+[(2,2)成分]}/0.5  
+
+dの第1第2成分をdisto_k3の第1第2成分に入力する   
+"disto_k3"=[[dの第1成分], [dの第2成分], 0.0, 0.0, 0.0]  
 
 その後以下のように入力し実行  
 
 ```
+cp ./sfm_data.json /home/repos/openMVG_build/software/SfM/input/[フォルダ名]/out/matches/
 /bin/bash featurematch.sh
 ```
 
