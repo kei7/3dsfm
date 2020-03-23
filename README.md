@@ -24,7 +24,7 @@ docker exec -it [コンテナ名] /bin/bash
 
 # 2. ライブラリの準備
 ##  必要なライブラリをクローンし変更を加えビルドする
-デフォルトでは /home/repos/3dsfmリポジトリのホームディレクトリが共有される  
+デフォルトでは[クローンしたリポジトリ]/3dsfm:/home/repos/3dsfmとなるようにリポジトリのホームディレクトリと共有される  
 3dsfm/dev_mvg/link.shを実行すればファイル変更が加えられる  
 以下、/home/repos をホームディレクトリとする  
 
@@ -54,7 +54,7 @@ Save(sfmEngine.Get_SfM_Data(),
       ESfM_Data(ALL));
 ```
 
-編集後のファイルはopenMVG/src/software/SfM/にコピー  
+編集後のファイルは~/openMVG/src/software/SfM/にコピー  
 
 #### ビルド(Nはコア数)
 
@@ -120,7 +120,7 @@ Image& imageData = images[idxView];
 	// load image
 ```
 
-編集後、openMVS/libs/MVS/にコピー
+編集後、~/openMVS/libs/MVS/にコピー
 
 #### ビルド
 
@@ -141,7 +141,7 @@ http://www.meshlab.net/
 読み込む画像はjpg画像に直して  
 
 ```
-openMVG_build/software/SfM/input/[フォルダ名]/images/[画像名].jpg
+~/openMVG_build/software/SfM/input/[フォルダ名]/images/[画像名].jpg
 ```
 
 のようにしてコピーする  
