@@ -60,6 +60,11 @@ RUN cd ~
 
 #build openMVG
 RUN git clone --recursive https://github.com/openMVG/openMVG.git /home/repos/openMVG
+RUN git clone https://github.com/thunders82/openMVS.git /home/repos/openMVS
+RUN cd /home/repos/openMVS && git checkout 6bdc5ecbf45b540d408ded4592191dd30c3f69cf
+
+RUN cd /home/repos/3dsfm/dev_mvg && /bin/bash link.sh
+
 RUN mkdir /home/repos/openMVG_build
 RUN cd /home/repos/openMVG_build && cmake -DCMAKE_BUILD_TYPE=RELEASE . ../openMVG/src/ && make -j2
 
@@ -84,8 +89,8 @@ RUN cd /home/repos/ceres_build && cmake . ../ceres-solver/ -DMINIGLOG=ON -DBUILD
 #RUN cd ..
 
 #OpenMVS
-RUN git clone https://github.com/thunders82/openMVS.git /home/repos/openMVS
-RUN cd /home/repos/openMVS && git checkout 6bdc5ecbf45b540d408ded4592191dd30c3f69cf
+#RUN git clone https://github.com/thunders82/openMVS.git /home/repos/openMVS
+#RUN cd /home/repos/openMVS && git checkout 6bdc5ecbf45b540d408ded4592191dd30c3f69cf
 RUN mkdir /home/repos/openMVS_build
 RUN cd /home/repos/openMVS_build && cmake . ../openMVS -DCMAKE_BUILD_TYPE=RELEASE -DVCG_ROOT="($main_path)/vcglib" -DBUILD_SHARED_LIBS=ON -DOpenMVS_USE_CUDA=OFF -DOpenMVS_USE_BREAKPAD=OFF && make -j2 && make install
 
