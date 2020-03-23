@@ -243,7 +243,7 @@ d =  [ 9.89016633e-01 -6.64973985e+01 -3.98764708e-03 -7.26857600e-02
 ```
 
 このキャリブレーション結果のKとdが再構成に必要となるのでエディタなどにコピーする  
-ここで、形状推定カメラの結果、高速度カメラ3台(A,B,C)の結果について内部パラメータを通し番号で「0,1,2,3」とする
+ここで、形状推定カメラの結果、高速度カメラ3台(A,B,C)の結果について内部パラメータを通し番号で0,1,2,3とする
 
 # 4. 再構成の実行
 ## 4.0. 設定ファイルの編集
@@ -279,7 +279,7 @@ chexif.py、model1.py.in
 ~/openMVG_build/software/SfM/input/[フォルダ名]/out/matches/sfm_data.json  
 というファイルが生成される。  
 
-## 4.2. 特徴量計算 
+## 4.2. 内部パラメータの同定 
 ~/openMVG_build/software/SfM/input/[フォルダ名]/out/matches/sfm_data.json  
 は以下のようになっている  
 
@@ -351,10 +351,11 @@ vi sfm_data.json
 "intrinsics"は画像撮影に用いたカメラの内部パラメータについてを示している  
 
 ここで、"intrinsics"4つの通し番号を0',1',2',3'とする  
+
 この章では、3.4.で計算した内部パラメータ0,1,2,3と"intrinsics"の内部パラメータ0',1',2',3'の対応関係を求めたい
 
 例えば上の内容を例にすると  
-"views"の各画像について"value"の"filename":"H00020.jpg"よりカメラ画像を撮影した機種がわかる(法則を決めておく)
+"views"の各画像について"value"の"filename":"H00020.jpg"よりカメラ画像を撮影した機種がわかる(法則を決めておく)  
 この場合"filename":"H00020.jpg"に対応するのは形状推定カメラである
 よって内部パラメータ0に対応している  
 "views"の各画像について"value"の"id_intrinsic":1　より、sfm_data.jsonの"intrinsics"の内部パラメータ1'と対応していることがわかる
@@ -370,7 +371,7 @@ Kの(1,1)成分と(2,2)成分からからfocallengthを計算し入力
 dの第1第2成分をdisto_k3の第1第2成分に入力する   
 "disto_k3"=[[dの第1成分], [dの第2成分], 0.0, 0.0, 0.0]  
 
-その後以下のように入力し実行  
+## 4.3.  
 
 ```
 cp ./sfm_data.json /home/repos/openMVG_build/software/SfM/input/[フォルダ名]/out/matches/
@@ -406,7 +407,7 @@ matches.f.txtで出力され
 のような構造になっている  
 手動でマッチング結果を追加する場合はmatches.f.txtに特徴点マッチングを追加して続きを実行すればよい  
 
-## 4.2. Structure from Motionによる位置姿勢推定
+## 4.4. Structure from Motionによる位置姿勢推定
 以下のように実行  
 
 ```
@@ -420,7 +421,7 @@ scene.mvs、scene.ply、cloud_and_poses.ply、htmlファイルなどが出力さ
 cloud_and_poses.plyをmeshlabで確認すると、カメラ位置が緑の点で、マッチングした特徴点が灰色で示される。  
 htmlファイルにはStructure from Motionの結果が記述されており、位置姿勢推定ができたカメラ画像については誤差が表示される。  
 
-## 4.3. メッシュの再構成
+## 4.5. メッシュの再構成
 以下のように実行  
 
 ```
@@ -433,7 +434,7 @@ scene_dense_mesh.plyとしてメッシュファイルが出力される。
 
 scene_dense_mesh.plyをmeshlabで確認すると正しく推定できていれば心臓メッシュ形状が再構成される  
 
-## 4.4. テクスチャの貼り付け
+## 4.6. テクスチャの貼り付け
 meshlabで形状を確認し、心臓につながっていないメッシュとそれを構成する点群をすべて削除する  
 削除後以下のように実行  
 
@@ -463,7 +464,7 @@ TextureMesh scene_dense.mvs --mesh-file [メッシュ名.ply]　--retexture 1
 
 とすると、テクスチャ貼り付けの履歴を再利用できる  
 
-## 4.5. Optical画像の貼り付け
+## 4.7. Optical画像の貼り付け
 
 ```
 ~/openMVG_build/software/SfM/input/[フォルダ名]/opt/[画像名].jpg
