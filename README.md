@@ -147,28 +147,47 @@ http://www.meshlab.net/
 
 # 3. 再構成用画像の準備
 ## 3.1. 画像のコピー
-読み込む画像はjpg画像に直して~/openMVG_build/software/SfM/input/[フォルダ名]/images/[画像名].jpg  
+Structure from Motionの入力として読み込む画像はjpg画像に直して~/openMVG_build/software/SfM/input/[フォルダ名]/images/[画像名].jpg  
 となるようにしてコピーする必要がある  
-/home/repos/3dsfm/executeにある  
+
+### 設定ファイルの編集
+/home/repos/3dsfm/executeにある
 setup.txtを編集する  
 
 ```
-vi /home/repos/3dsfm/execute/setup.txt  
+vi /home/repos/3dsfm/execute/setup.txt
 ```
 
 ```
-INPUT=[画像フォルダへの絶対パス] 
+MVGBUILDMAIN="/home/repos/openMVG_build"
+MVSBUILDMAIN="/home/repos/openMVS_build/bin"
+MVGEXEC="software/SfM"
+MVGRELEASE="Linux-x86_64-RELEASE"
+上4行は使用するライブラリのフォルダに合わせて固定
+IMGDIRNAME="20200109-1-3_1"  #画像フォルダのフォルダ名
+再構成用画像のあるフォルダ名を入力 
+INPUT="/mnt/Jalife/ExperimentData/20200109-1/20200109-1-3_1" #画像フォルダへの絶対パス
 ```
  
+その後画像ファイルをコピーする  
+ 
 ```
-cp copy.sh
+/bin/bash copy.sh
 ```
 
-~/openMVG_build/software/SfM/input/[フォルダ名]/images/[画像名].jpg
-となるようにしてコピーする 必要がある
+実行結果例
+```
+/bin/bash copy.sh
+ls /home/repos/openMVG_build/software/SfM/input/20200109-1-3_1/images/
+#出力結果
+$ H*.jpg <= 形状推定カメラ画像  
+ OPTA*.jpg <= 高速度カメラ1画像  
+ OPTB*.jpg <= 高速度カメラ2画像  
+ OPTC*.jpg <= 高速度カメラ3画像  
+```
 
 ## 3.2. カメラ素子サイズについて
-以下のことに留意する
+以下のことに留意する  
 
 ```
 vi /home/repos/3dsfm/execute/sensor_width_camera_database.txt  
@@ -177,47 +196,72 @@ vi /home/repos/3dsfm/execute/sensor_width_camera_database.txt
 とすると以下のようになっている  
 
 ```
-Camera-A;6.167 #例1
-Camera-B:6.166 #例2
-[形状推定カメラの機種名];[素子サイズ(mm)]
-[高速度カメラの機種名1];[素子サイズ(mm)]
-[高速度カメラの機種名2];[素子サイズ(mm)]
-[高速度カメラの機種名3];[素子サイズ(mm)]
+SO-01K;6.167 #例1 形状推定カメラ
+SA-4-512A;10.240 #例2 高速度カメラA
+SA-4-512B;10.241 #例3 高速度カメラB
+Mini-512C;10.242 #例4 高速度カメラC
 ```
 
-この時、使用するカメラ機種名や素子サイズが同じ場合でも、Camera-A;6.167,Camera-B;6.166のようにする  
-異なる機種名、素子サイズにしなければ複数のカメラが同じ内部パラメータを持つように設定されてしまうので注意する。  
+[カメラの機種名];[画像センサ素子サイズ(mm)]となるように記述する必要がある
 
-## 3.3. exifデータの編集
+**この時、使用するカメラ機種名や素子サイズが同じ場合でも、複数台のカメラを使う場合は
+SA4-512A;10.240  
+SA4-512B;10.241  
+のように異なる機種名、素子サイズを書き込まなければ複数のカメラが同じ内部パラメータを持つように設定されてしまうので注意する。**  
 
+## 3.3. exifデータの編集について
+画像のexifデータ(メタデータ)を書き換える
 
 ```
 vi /home/repos/3dsfm/execute/chexif.py  
 ```
 
 とし必要に応じてL21以降を書き換える。  
-chexif.pyは画像のexifデータ(メタデータ)を書き換える
 
 ```
 data["Exif.Image.Model"] = "SO-01K" #撮影カメラ機種名。sensor_width_camera_database.txtに追加したカメラ機種名と一致させる
-data["Exif.Photo.FocalLength"] = meta1["Exif.Photo.FocalLength"].value #焦点距離、仮の数字なので別ファイルからコピーするだけ
+data["Exif.Photo.FocalLength"] = meta1["Exif.Photo.FocalLength"].value #焦点距離　仮の値を別ファイルからコピーする。参照ファイルはリポジトリ内にある
 data["Exif.Photo.PixelXDimension"] = 1920 #画像の横サイズ
 data["Exif.Photo.PixelYDimension"] = 1080 #画像の縦サイズ
 ```
 
-このとき、
+例  
+~/openMVG_build/software/SfM/input/20200109-1-3_1/images/H*.jpg <= 形状推定カメラ画像,  [カメラモデル]="SO-01K"  
+~/openMVG_build/software/SfM/input/20200109-1-3_1/images/OPTA*.jpg <= 高速度カメラA画像,  [カメラモデル]="SA4-512A"  
+~/openMVG_build/software/SfM/input/20200109-1-3_1/images/OPTB*.jpg <= 高速度カメラB画像,  [カメラモデル]="SA4-512B"  
+~/openMVG_build/software/SfM/input/20200109-1-3_1/images/OPTC*.jpg <= 高速度カメラC画像,  [カメラモデル]="Mini-512C"  
 
 ## 3.4. カメラ内部パラメータの計算
 /home/repos/3dsfm/execute/calibrate.py  
-を実行して形状推定カメラ1台と高速度カメラ3台それぞれについて内部パラメータを計算する。  
+を実行して形状推定カメラ1台と高速度カメラ3台それぞれについて正方形のチェスパターン画像から内部パラメータを計算する。  
 必要に応じてL8,9のキャリブレーションパターンを変更する。  
+
+```
+vi calibrate.py
+```
+
+```
+square_size = 0.8      # 正方形パターン1つの一辺のサイズ
+pattern_size = (3,3)  # 模様のサイズ
+```
+
+編集後カメラ内部パラメータのキャリブレーションを以下のコマンドで実行
 
 ```
 cd /home/repos/3dsfm/execute
 python calibrate.py [キャリブレーション画像フォルダへのパス]
 ```
 
-するとキャリブレーション結果が例として以下のように得られる  
+実行例  
+```
+cd /home/repos/3dsfm/execute
+python calibrate.py /home/repos/openMVG_build/software/SfM/input/20200109-1-3_1/calib  #形状推定カメラキャリブレーション
+python calibrate.py /home/repos/openMVG_build/software/SfM/input/20200109-1-3_1/cam_calibA  #高速度カメラ1キャリブレーション
+python calibrate.py /home/repos/openMVG_build/software/SfM/input/20200109-1-3_1/cam_calibB  #高速度カメラ2キャリブレーション
+python calibrate.py /home/repos/openMVG_build/software/SfM/input/20200109-1-3_1/cam_calibC  #高速度カメラ3キャリブレーション
+```
+
+すると各カメラについてキャリブレーション結果が例として以下のように得られる  
 
 ```
 loading...E:\AnalysisResult\20200106\20191227-1A\cam_calib\000239.png
@@ -242,28 +286,15 @@ d =  [ 9.89016633e-01 -6.64973985e+01 -3.98764708e-03 -7.26857600e-02
   1.24415171e+03]
 ```
 
-このキャリブレーション結果のKとdが再構成に必要となるのでエディタなどにコピーする  
-ここで、形状推定カメラの結果、高速度カメラ3台(A,B,C)の結果について内部パラメータを通し番号で0,1,2,3とする
+**このキャリブレーション結果のKとdが再構成に必要となるのでエディタなどにコピーする**  
+ここで、実行結果について  
+形状推定カメラの内部パラメータをC0  
+高速度カメラAの内部パラメータをC1  
+高速度カメラBの内部パラメータをC2  
+高速度カメラCの内部パラメータをC3  
+とする  
 
 # 4. 再構成の実行
-## 4.0. 設定ファイルの編集
-/home/repos/3dsfm/executeにある
-setup.txtを編集する  
-
-```
-vi /home/repos/3dsfm/execute/setup.txt
-```
-
-```
-MVGBUILDMAIN="/home/repos/openMVG_build"
-MVSBUILDMAIN="/home/repos/openMVS_build/bin"
-MVGEXEC="software/SfM"
-MVGRELEASE="Linux-x86_64-RELEASE"
-上4行は使用するライブラリのフォルダに合わせて固定
-IMGDIRNAME="20191203-1_3" 
-再構成用画像のあるフォルダ名を入力 
-```
-
 ## 4.1. 画像読み込み
 executeフォルダに移動し以下のように実行  
 
@@ -272,22 +303,22 @@ executeフォルダに移動し以下のように実行
 ```
 
 すると  
-chexif.py、model1.py.in  
-が実行され  
-~/openMVG_build/software/SfM/input/[フォルダ名]/images/[画像名].jpg  
-を読み込み  
 ~/openMVG_build/software/SfM/input/[フォルダ名]/out/matches/sfm_data.json  
 というファイルが生成される。  
+実行結果例  
+```
+/bin/bash imagelisting.sh
+ls /openMVG_build/software/SfM/input/20200109-1-3_1/out/matches/
+$ sfm_data.json
+```
 
 ## 4.2. 内部パラメータの同定 
-~/openMVG_build/software/SfM/input/[フォルダ名]/out/matches/sfm_data.json  
-は以下のようになっている  
+4.1.で生成されたsfm_data.jsonの構成は以下のようになっているので確認する  
 
 ```
 cd  /home/repos/3dsfm/execute
 vi sfm_data.json
 ```
-
 
 ```
 {
@@ -339,6 +370,30 @@ vi sfm_data.json
                 }
             }
         },
+	{
+            "key": 1,
+            "value": {
+                "polymorphic_id": 2147483650,
+                "polymorphic_name": "pinhole_radial_k3",
+                "ptr_wrapper": {
+                    "id": 2147484127,
+                    "data": {
+                        "width": 1920,
+                        "height": 1080,
+                        "focal_length": 1314.00000476837159,
+                        "principal_point": [
+                            960.0,
+                            540.0
+                        ],
+                        "disto_k3": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                }
+            }
+        },
         ...
         ],
     "extrinsics": [],
@@ -350,16 +405,25 @@ vi sfm_data.json
 "views"は入力画像について  
 "intrinsics"は画像撮影に用いたカメラの内部パラメータについてを示している  
 
-ここで、"intrinsics"4つの通し番号を0',1',2',3'とする  
+ここで、"intrinsics"に書き込まれている4つの内部パラメータについてC0',C1',C2',C3'とする  
 
-この章では、3.4.で計算した内部パラメータ0,1,2,3と"intrinsics"の内部パラメータ0',1',2',3'の対応関係を求めたい
+**ここでは、3.4.で計算した内部パラメータC0,C1,C2,C3と"intrinsics"の内部パラメータC0',C1',C2',C3'の対応関係を求めたい**
 
-例えば上の内容を例にすると  
-"views"の各画像について"value"の"filename":"H00020.jpg"よりカメラ画像を撮影した機種がわかる(法則を決めておく)  
-この場合"filename":"H00020.jpg"に対応するのは形状推定カメラである
-よって内部パラメータ0に対応している  
-"views"の各画像について"value"の"id_intrinsic":1　より、sfm_data.jsonの"intrinsics"の内部パラメータ1'と対応していることがわかる
-よって[内部パラメータ0]=[内部パラメータ1']
+例  
+"views"に書き込まれている画像について"key"=0 の画像は"value"の"filename":"H00020.jpg"より形状推定カメラの画像であることがわかる
+よって内部パラメータC0に対応している  
+また"views"の画像の"value"の"id_intrinsic":1　より内部パラメータC1'と対応していることがわかる  
+よって　C0=C1'  
+また"H*.jpg"という画像は"id_intrinsic":1を共有している  
+同様の手順により  
+"OPTA*.jpg"という画像が"id_intrinsic":3を共有とすると  
+C1=C3'  
+"OPTB*.jpg"という画像が"id_intrinsic":2を共有とすると  
+C2=C2'  
+"OPTC*.jpg"という画像が"id_intrinsic":0を共有とすると  
+C3=C0'  
+
+という関係がわかる
 
 そこで3.4.で計算した内部パラメータKとdから各画像に対応する内部パラメータを入力する。  
 内部パラメータ0のKとdを用いて
@@ -371,20 +435,52 @@ Kの(1,1)成分と(2,2)成分からからfocallengthを計算し入力
 dの第1第2成分をdisto_k3の第1第2成分に入力する   
 "disto_k3"=[[dの第1成分], [dの第2成分], 0.0, 0.0, 0.0]  
 
-## 4.3.  
+書き込み例
+```
+	{
+            "key": 1,
+            "value": {
+                "polymorphic_id": 2147483650,
+                "polymorphic_name": "pinhole_radial_k3",
+                "ptr_wrapper": {
+                    "id": 2147484127,
+                    "data": {
+                        "width": 1920,
+                        "height": 1080,
+                        "focal_length": 3120, <= Kから入力
+                        "principal_point": [
+                            960.0,
+                            540.0
+                        ],
+                        "disto_k3": [
+                            9.89016633e-01, <= dから入力
+			    -6.64973985e+01, <= dから入力
+                            0.0
+                        ]
+                    }
+                }
+            }
+        },
+```
+
+## 4.3.  マッチングの実行
 
 ```
 cp ./sfm_data.json /home/repos/openMVG_build/software/SfM/input/[フォルダ名]/out/matches/
 /bin/bash featurematch.sh
 ```
 
-これによりsfm_data.jsonを読み込んでmodel2.py.inが実行され  
-実行結果が  
-~/openMVG_build/software/SfM/input/[フォルダ名]/out/matches/に出力され  
-sfm_data.binとして出力されるほか  
+実行例  
+
+```
+cp ./sfm_data.json /home/repos/openMVG_build/software/SfM/input/20200109-1-3_1/out/matches/
+/bin/bash featurematch.sh
+```
+
+これによりマッチングが行われ実行結果が  
+~/openMVG_build/software/SfM/input/[フォルダ名]/out/matches/に出力され    
 特徴量とマッチング結果が出力される  
-特徴量は  
-[画像名].featの形で出力され  
+特徴量は[画像名].featの形で出力され  
 
 ```
 [特徴点1のx座標] [特徴点1のy座標] [特徴点1のパラメータ1] [特徴点1のパラメータ2]
@@ -393,8 +489,7 @@ sfm_data.binとして出力されるほか
 ```
 
 のような構造になっている  
-マッチング結果は  
-matches.f.txtで出力され  
+また、マッチング結果はsfm_data.bin,matches.f.txtで出力され  
 
 ```
 [画像1の通し番号] [画像2の通し番号]
@@ -412,14 +507,12 @@ matches.f.txtで出力され
 
 ```
 /bin/bash incrementSfM.sh
-```
-
-matches.f.txtまたはsfm_data.binを読み込みmodel3.py.inを実行  
+```  
 
 これにより、~/openMVG_build/software/SfM/input/[フォルダ名]/out/reconstruction_sequential以下に  
 scene.mvs、scene.ply、cloud_and_poses.ply、htmlファイルなどが出力される。  
 cloud_and_poses.plyをmeshlabで確認すると、カメラ位置が緑の点で、マッチングした特徴点が灰色で示される。  
-htmlファイルにはStructure from Motionの結果が記述されており、位置姿勢推定ができたカメラ画像については誤差が表示される。  
+htmlファイルにはStructure from Motionの結果が記述されており、位置姿勢推定ができたカメラ画像については誤差が表示され、できなかった画像については空白が表示される。    
 
 ## 4.5. メッシュの再構成
 以下のように実行  
@@ -449,13 +542,13 @@ TextureMesh scene_dense.mvs --mesh-file [メッシュ名.ply]　
 ```
 
 とすることで  
-指定したファイルのメッシュのみにテクスチャを貼り付けることができる。  
+plyで指定したファイルのメッシュのみにテクスチャを貼り付けることができる。  
 これにより  
 scene_dense_mesh_texture.plyとscene_dense_mesh_texture.png  
 が出力される。両方のファイルを同一フォルダに置いた状態でmeshlabでplyファイルを開くとテクスチャが貼られたメッシュが確認できる  
 
 また、テクスチャの履歴として  
-execute/atlas_backup  
+/home/repos/3dsfm/execute/atlas_backup  
 が作成され、TextureMeshの実行時に
 
 ```
