@@ -31,8 +31,8 @@ docker exec -it [コンテナ名] /bin/bash
 ### 2.1. OpenMVG
 Structure from Motion を行うためのライブラリ  
 #### ファイルの変更
-dev_mvg/main_ComputeMatches.cpp  
-dev_mvg/main_incrementalSfM.cpp に変更済みファイルあり  
+3dsfm/dev_mvg/main_ComputeMatches.cpp  
+3dsfm/dev_mvg/main_incrementalSfM.cpp に変更済みファイルあり  
 main_ComputeMatches:L503に以下を追加しmatches.f.txtが出力されるように変更  
 
 ```
@@ -147,7 +147,7 @@ http://www.meshlab.net/
 のようにしてコピーする  
 
 ## 3.2. カメラ素子サイズの編集
-/home/repos/install/execute/sensor_width_camera_database.txt  
+/home/repos/3dsfm/execute/sensor_width_camera_database.txt  
 の最後に以下のように追加  
 
 ```
@@ -160,7 +160,7 @@ http://www.meshlab.net/
 この時、使用するカメラ機種や素子サイズが同じ場合でも、Camera-A:6.167,Camera-B:6.166のように異なる機種名、素子サイズにしなければ複数のカメラが同じ内部パラメータを持つように設定されてしまうので注意する。  
 ## 3.3. exifデータの編集
 再構成時には  
-/home/repos/install/execute/chexif.py  
+/home/repos/3dsfm/execute/chexif.py  
 を実行して再構成用画像のexifデータを書き換える。  
 そこで、必要に応じてL21以降を書き換える。  
 
@@ -172,7 +172,7 @@ data["Exif.Photo.PixelYDimension"] = 1080 #画像の縦サイズ
 ```
 
 ## 3.4. カメラ内部パラメータの計算
-/home/repos/install/execute/calibrate.py  
+/home/repos/3dsfm/execute/calibrate.py  
 を実行して形状推定カメラ1台と高速度カメラ3台それぞれについて内部パラメータを計算する。  
 必要に応じてL8,9のキャリブレーションパターンを変更する。  
 
@@ -231,13 +231,13 @@ executeフォルダに移動し以下のように実行
 すると  
 chexif.py、model1.py.in  
 が実行され  
-openMVG_build/software/SfM/input/[フォルダ名]/images/[画像名].jpg  
+~/openMVG_build/software/SfM/input/[フォルダ名]/images/[画像名].jpg  
 を読み込み  
-openMVG_build/software/SfM/input/[フォルダ名]/out/sfm_data.json  
+~/openMVG_build/software/SfM/input/[フォルダ名]/out/matches/sfm_data.json  
 というファイルが生成される。  
 
 ## 4.2. 特徴量計算 
-openMVG_build/software/SfM/input/[フォルダ名]/out/sfm_data.json  
+~/openMVG_build/software/SfM/input/[フォルダ名]/out/matches/sfm_data.json  
 は以下のようになっている  
 
 ```
@@ -312,7 +312,9 @@ dの第1第2戦分をdisto_k3の第1第2成分に入力する
 ```
 
 これによりsfm_data.jsonを読み込んでmodel2.py.inが実行され  
-事項結果がsfm_data.binとして出力されるほか  
+実行結果が  
+~/openMVG_build/software/SfM/input/[フォルダ名]/out/matches/に出力され  
+sfm_data.binとして出力されるほか  
 特徴量とマッチング結果が出力される  
 特徴量は  
 [画像名].featの形で出力され  
@@ -347,7 +349,8 @@ matches.f.txtで出力され
 
 matches.f.txtまたはsfm_data.binを読み込みmodel3.py.inを実行  
 
-これにより、out/reconstruction_sequential以下に、scene.mvs、scene.ply、cloud_and_poses.ply、htmlファイルなどが出力される。  
+これにより、~/openMVG_build/software/SfM/input/[フォルダ名]/out/reconstruction_sequential以下に  
+scene.mvs、scene.ply、cloud_and_poses.ply、htmlファイルなどが出力される。  
 cloud_and_poses.plyをmeshlabで確認すると、カメラ位置が緑の点で、マッチングした特徴点が灰色で示される。  
 htmlファイルにはStructure from Motionの結果が記述されており、位置姿勢推定ができたカメラ画像については誤差が表示される。  
 
@@ -359,6 +362,7 @@ htmlファイルにはStructure from Motionの結果が記述されており、�
 ```
 
 これにより、openMVSによるメッシュ再構成が行われ  
+~/openMVG_build/software/SfM/input/[フォルダ名]/out/reconstruction_sequential以下に  
 scene_dense_mesh.plyとしてメッシュファイルが出力される。  
 
 scene_dense_mesh.plyをmeshlabで確認すると正しく推定できていれば心臓メッシュ形状が再構成される  
@@ -371,21 +375,32 @@ meshlabで形状を確認し、心臓につながっていないメッシュと�
 /bin/bash texture.sh
 ```
 
-TextureMeshの実行時に引数として--mesh-file [メッシュ名.ply]　と指定することで。  
-指定したファイルのメッシュのみにテクスチャを貼り付けることができる。  
-これにより、
+texture.shで実行しているTextureMeshの実行時に
 
+```
+TextureMesh scene_dense.mvs --mesh-file [メッシュ名.ply]　
+```
+
+とすることで  
+指定したファイルのメッシュのみにテクスチャを貼り付けることができる。  
+これにより  
 scene_dense_mesh_texture.plyとscene_dense_mesh_texture.png  
 が出力される。両方のファイルを同一フォルダに置いた状態でmeshlabでplyファイルを開くとテクスチャが貼られたメッシュが確認できる  
 
 また、テクスチャの履歴として  
 execute/atlas_backup  
-が作成され、TextureMeshの実行時に--retexture 1　とすると、テクスチャ貼り付けの履歴を再利用できる  
+が作成され、TextureMeshの実行時に
+
+```
+TextureMesh scene_dense.mvs --mesh-file [メッシュ名.ply]　--retexture 1
+```
+
+とすると、テクスチャ貼り付けの履歴を再利用できる  
 
 ## 4.5. Optical画像の貼り付け
 
 ```
-openMVG_build/software/SfM/input/[フォルダ名]/opt/[画像名].jpg
+~/openMVG_build/software/SfM/input/[フォルダ名]/opt/[画像名].jpg
 ```
 
 のようにしてopticalマッピング画像を用意  
