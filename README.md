@@ -150,16 +150,30 @@ http://www.meshlab.net/
 読み込む画像はjpg画像に直して  
 
 ```
-~/openMVG_build/software/SfM/input/[フォルダ名]/images/[画像名].jpg
+vi /home/repos/3dsfm/execute/setup.txt  
 ```
 
-のようにしてコピーする  
+```
+$INPUT=[画像フォルダへの絶対パス] 
+```
+ 
+```
+cp copy.sh
+```
+
+~/openMVG_build/software/SfM/input/[フォルダ名]/images/[画像名].jpg
+となるようにしてコピーする 必要がある
 
 ## 3.2. カメラ素子サイズの編集
-/home/repos/3dsfm/execute/sensor_width_camera_database.txt  
-の最後に以下のように追加  
 
 ```
+vi /home/repos/3dsfm/execute/sensor_width_camera_database.txt  
+```
+とし、最後を以下のように追加  
+
+```
+Camera-A;6.167
+Camera-B:6.166
 [形状推定カメラの機種名];[素子サイズ(mm)]
 [高速度カメラの機種名1];[素子サイズ(mm)]
 [高速度カメラの機種名2];[素子サイズ(mm)]
