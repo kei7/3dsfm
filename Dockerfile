@@ -42,8 +42,8 @@ RUN apt-get update --fix-missing && apt-get -y install \
                    freeglut3-dev libglew-dev libglfw3-dev \
                    libqt4-dev \
                    graphviz-dev graphviz \
-                   python-pyexiv2
-                   python-numpy
+                   python-pyexiv2 \
+                   python-numpy \
                    python-opencv
 USER root
 ENV HOME /root
@@ -63,7 +63,11 @@ RUN git clone --recursive https://github.com/openMVG/openMVG.git /home/repos/ope
 RUN git clone https://github.com/thunders82/openMVS.git /home/repos/openMVS
 RUN cd /home/repos/openMVS && git checkout 6bdc5ecbf45b540d408ded4592191dd30c3f69cf
 
-RUN cd /home/repos/3dsfm/dev_mvg && /bin/bash link.sh
+#RUN cd /home/repos/3dsfm/dev_mvg && /bin/bash link.sh
+RUN git clone https://github.com/kei7/dev_mvg.git /home/repos/dev_mvg
+
+RUN cp /home/repos/dev_mvg/main_ComputeMatches.cpp /home/repos/dev_mvg/main_IncrementalSfM.cpp /home/repos/openMVG/src/software/SfM/
+#RUN cp /home/repos/dev_mvg/SceneTexture.cpp /home/repos/openMVS/libs/MVS
 
 RUN mkdir /home/repos/openMVG_build
 RUN cd /home/repos/openMVG_build && cmake -DCMAKE_BUILD_TYPE=RELEASE . ../openMVG/src/ && make -j2
@@ -75,7 +79,7 @@ RUN cd /home/repos && main_path=`pwd`
 #Eigen (Required)
 RUN hg clone https://bitbucket.org/eigen/eigen#3.2 /home/repos/eigen3.2
 RUN mkdir /home/repos/eigen_build
-RUN cd /home/repos/eigen_build && cmake . ../eigen && make -j2 && make install
+RUN cd /home/repos/eigen_build && cmake . ../eigen3.2 && make -j2 && make install
 #RUN cd ..
 
 #VCGLib (Required)
@@ -85,14 +89,17 @@ RUN git clone https://github.com/cdcseacave/VCG.git /home/repos/vcglib
 RUN git clone https://ceres-solver.googlesource.com/ceres-solver /home/repos/ceres-solver 
 RUN mkdir /home/repos/ceres_build
 RUN cd /home/repos/ceres-solver && git checkout ba62397d80b2d7d34c3cca5e75f1f154ad8e41bb
-RUN cd /home/repos/ceres_build && cmake . ../ceres-solver/ -DMINIGLOG=ON -DBUILD_TESTING=OFF -DBUILD_EXAMPLES=OFF && make -j2 && make install
+RUN cd /home/repos/ceres_build && cmake . ../ceres-solver -DMINIGLOG=ON -DBUILD_TESTING=OFF -DBUILD_EXAMPLES=OFF && make -j2 && make install
 #RUN cd ..
 
 #OpenMVS
 #RUN git clone https://github.com/thunders82/openMVS.git /home/repos/openMVS
 #RUN cd /home/repos/openMVS && git checkout 6bdc5ecbf45b540d408ded4592191dd30c3f69cf
+RUN cd /home/repos/dev_mvg && git fetch && git pull
+RUN cp /home/repos/dev_mvg/SceneTexture.cpp /home/repos/openMVS/libs/MVS/
 RUN mkdir /home/repos/openMVS_build
-RUN cd /home/repos/openMVS_build && cmake . ../openMVS -DCMAKE_BUILD_TYPE=RELEASE -DVCG_ROOT="($main_path)/vcglib" -DBUILD_SHARED_LIBS=ON -DOpenMVS_USE_CUDA=OFF -DOpenMVS_USE_BREAKPAD=OFF && make -j2 && make install
+RUN cd /home/repos/ && main_path='pwd'
+RUN cd /home/repos/openMVS_build && cmake . ../openMVS -DCMAKE_BUILD_TYPE=RELEASE -DVCG_ROOT="/home/repos/vcglib" -DBUILD_SHARED_LIBS=ON -DOpenMVS_USE_CUDA=OFF -DOpenMVS_USE_BREAKPAD=OFF && make -j2 && make install
 
 #Install OpenMVS library (optional):
 
