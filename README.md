@@ -72,15 +72,17 @@ https://github.com/thunders82/openMVS.git
 #### OpenMVS メインストリームのGitリポジトリ
 https://github.com/cdcseacave/openMVS.git
 
-#### ファイルコピーとビルド
+#### ビルド
 
 ```
-cp /home/repos/3dsfm/dev_mvg/SceneTexture.cpp /home/repos/openMVS/libs/MVS/
 cd /home/repos/openMVS_build
 cmake . ../openMVS -DCMAKE_BUILD_TYPE=RELEASE -DVCG_ROOT="/home/repos/vcglib" -DBUILD_SHARED_LIBS=OFF -DOpenMVS_USE_CUDA=OFF -DOpenMVS_USE_BREAKPAD=OFF
 make -j2
 make install
 ```
+
+Dockerfileのビルド時に実行しようとするとなぜかエラーになる  
+解決したらDockerfileに統合してほしい
 
 #### ファイル変更内容
 SceneTexture.cpp:L576を編集。textureに使う画像サイズに制限をかける(textureに使用したい画像に応じて数字は編集)  
