@@ -15,6 +15,6 @@ mv ./${MAKEMODEL_NAME}2.py ${MVGBUILDMAIN}/${MVGEXEC}/
 cp ./sfm_data.json ${MVGBUILDMAIN}/${MVGEXEC}/input/${IMGDIRNAME}/out/matches/
 python ${MVGBUILDMAIN}/${MVGEXEC}/${MAKEMODEL_NAME}2.py
 
-# data export
-${MVGBUILDMAIN}/${MVGRELEASE}/openMVG_main_openMVG2openMVS -i ${MVGBUILDMAIN}/${MVGEXEC}/input/${IMGDIRNAME}/out/reconstruction_sequential/sfm_data.bin -o ${MVGBUILDMAIN}/${MVGEXEC}/input/${IMGDIRNAME}/out/reconstruction_sequential/scene.mvs
+# data export 
+# ${MVGBUILDMAIN}/${MVGRELEASE}/openMVG_main_openMVG2openMVS -i ${MVGBUILDMAIN}/${MVGEXEC}/input/${IMGDIRNAME}/out/reconstruction_sequential/sfm_data.bin -o ${MVGBUILDMAIN}/${MVGEXEC}/input/${IMGDIRNAME}/out/reconstruction_sequential/scene.mvs
 
