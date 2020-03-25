@@ -1,13 +1,13 @@
 # 3D Structure from Morion
 structure from motion for docker
 # 1．Dockerコンテナの作成
-## 1.1. Dockerのイメージを最新版に
+**Dockerのイメージを最新版に**
 
 ```
 docker pull nvidia/cuda:10.0-cudnn7-devel-ubuntu16.04
 ```
 
-## 1.2. Dockerコンテナの作成
+**Dockerコンテナの作成**
 docker-compose.ymlの内容でコンテナ作成
 必要に応じてdocker-compose.ymlのcontainer_nameを書き換える
 docker-compose.ymlのあるフォルダにて以下のコマンドを実行
@@ -24,8 +24,7 @@ docker exec -it [コンテナ名] /bin/bash
 ```
 
 # 2. ライブラリの準備
-
-を実行すればファイル変更が加えられる  
+  
 以下、/home/repos をホームディレクトリとする  
 
 ### 2.1. OpenMVG
