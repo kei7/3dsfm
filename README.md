@@ -294,7 +294,7 @@ vi sfm_data.json
                     "id": 2147483649,
                     "data": {
                         "local_path": "",
-                        "filename": "H00020.jpg", <= 画像名
+                        "filename": "H00020.jpg", <= 画像名 (形状推定カメラ画像=内部パラメータC0)
                         "width": 1920,
                         "height": 1080,
                         "id_view": 0,
