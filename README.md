@@ -67,7 +67,7 @@ openMVSの依存ライブラリ
 
 ### 2.5. OpenMVS
 #### 繰り返しテクスチャを行う場合のリポジトリ(デフォルト推奨)
-以下のバージョンにチェックアウト
+https://github.com/thunders82/openMVS.git
 
 #### OpenMVS メインストリームのGitリポジトリ
 https://github.com/cdcseacave/openMVS.git
