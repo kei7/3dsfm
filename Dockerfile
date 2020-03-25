@@ -98,8 +98,8 @@ RUN cd /home/repos/ceres_build && cmake . ../ceres-solver -DMINIGLOG=ON -DBUILD_
 RUN cd /home/repos/dev_mvg && git fetch && git pull
 RUN cp /home/repos/dev_mvg/SceneTexture.cpp /home/repos/openMVS/libs/MVS/
 RUN mkdir /home/repos/openMVS_build
-RUN cd /home/repos/ && main_path='pwd'
-RUN cd /home/repos/openMVS_build && cmake . ../openMVS -DCMAKE_BUILD_TYPE=RELEASE -DVCG_ROOT="/home/repos/vcglib" -DBUILD_SHARED_LIBS=ON -DOpenMVS_USE_CUDA=OFF -DOpenMVS_USE_BREAKPAD=OFF && make -j2 && make install
+#RUN cd /home/repos/ && main_path='pwd'
+#RUN cd /home/repos/openMVS_build && cmake . ../openMVS -DCMAKE_BUILD_TYPE=RELEASE -DVCG_ROOT="/home/repos/vcglib" -DBUILD_SHARED_LIBS=ON -DOpenMVS_USE_CUDA=OFF -DOpenMVS_USE_BREAKPAD=OFF && make -j2 && make install
 
 #Install OpenMVS library (optional):
 
