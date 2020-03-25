@@ -292,11 +292,11 @@ vi sfm_data.json
                     "id": 2147483649,
                     "data": {
                         "local_path": "",
-                        "filename": "H00020.jpg",
+                        "filename": "H00020.jpg", <= 画像名
                         "width": 1920,
                         "height": 1080,
                         "id_view": 0,
-                        "id_intrinsic": 1,
+                        "id_intrinsic": 1, <= 内部パラメータのid(=C1')
                         "id_pose": 0
                     }
                 }
@@ -306,7 +306,7 @@ vi sfm_data.json
         ],
     "intrinsics": [
         {
-            "key": 0,
+            "key": 0, <= 内部パラメータのid(=C0')
             "value": {
                 "polymorphic_id": 2147483649,
                 "polymorphic_name": "pinhole_radial_k3",
@@ -330,7 +330,7 @@ vi sfm_data.json
             }
         },
 	{
-            "key": 1,
+            "key": 1, <= 内部パラメータのid(=C1')
             "value": {
                 "polymorphic_id": 2147483650,
                 "polymorphic_name": "pinhole_radial_k3",
