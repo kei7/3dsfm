@@ -9,6 +9,7 @@ docker pull nvidia/cuda:10.0-cudnn7-devel-ubuntu16.04
 
 ## 1.2. Dockerコンテナの作成
 docker-compose.ymlの内容でコンテナ作成
+必要に応じてdocker-compose.ymlのcontainer_nameを書き換える
 docker-compose.ymlのあるフォルダにて以下のコマンドを実行
 
 ```
@@ -29,6 +30,7 @@ docker exec -it [コンテナ名] /bin/bash
 
 ### 2.1. OpenMVG
 Structure from Motion を行うためのライブラリ  
+
 #### ファイルの変更内容
 
 /home/repos/3dsfm/dev_mvg/main_ComputeMatches.cpp  
