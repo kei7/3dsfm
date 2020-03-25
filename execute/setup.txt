@@ -5,3 +5,5 @@ MVGRELEASE="Linux-x86_64-RELEASE"
 MAKEMODEL_NAME="exec_model"
 IMGDIRNAME="20200109-1-3_1"
 INPUT="/mnt/Share/ExperimentData/20200109-1/20200109-1-3_1"
+#IMGDIRNAME="20191203-1_1" #optical繰り返し投影まで含めた再構成をするときはこっちのフォルダ
+#INPUT="/mnt/Share/ExperimentData/20191203-1/20191293-1_1" 
