@@ -23,13 +23,6 @@ docker exec -it [コンテナ名] /bin/bash
 ```
 
 # 2. ライブラリの準備
-##  必要なライブラリをクローンし変更を加えビルドする
-デフォルトでは[クローンしたリポジトリ]/3dsfm:/home/repos/3dsfmとなるようにリポジトリのホームディレクトリと共有される  
-
-```
-cd /home/repos/3dsfm/dev_mvg/link.sh
-/bin/bash link.sh
-```
 
 を実行すればファイル変更が加えられる  
 以下、/home/repos をホームディレクトリとする  
@@ -59,62 +52,34 @@ main_incrementalSfM.cpp:L263に以下を追加しsfm_result.jsonが出力され�
 Save(sfmEngine.Get_SfM_Data(),
       stlplus::create_filespec(sOutDir, "sfm_result",".json"),
       ESfM_Data(ALL));
-```
-
-編集後のファイルは~/openMVG/src/software/SfM/にコピー  
-
-#### ビルド
-
-```
-cd /home/repos/openMVG_build
-cmake -DCMAKE_BUILD_TYPE=RELEASE . ../openMVG/src/
-make -j2
-```
+```  
 
 ### 2.2. Eigen
 openMVSの依存ライブラリ
-
-#### ビルド
-
-```
-cd /home/repos/eigen_build
-cmake . ../eigen3.2
-make -j2
-make install
-```
 
 ### 2.3. Vcglib
 openMVSの依存ライブラリ
 
 ### 2.4. Ceres
 openMVSの依存ライブラリ  
-ceres-solverを以下のバージョンにチェックアウト  
-
-```
-cd /home/repos/ceres-solver
-git checkout ba62397d80b2d7d34c3cca5e75f1f154ad8e41bb
-```
-
-#### ビルド
-
-```
-cd /home/repos/ceres_build
-cmake . ../ceres-solver/ -DMINIGLOG=ON -DBUILD_TESTING=OFF -DBUILD_EXAMPLES=OFF
-make -j2
-make install
-```
 
 ### 2.5. OpenMVS
 #### 繰り返しテクスチャを行う場合のリポジトリ(デフォルト推奨)
 以下のバージョンにチェックアウト
 
-```
-cd /home/repos/openMVS
-git checkout 6bdc5ecbf45b540d408ded4592191dd30c3f69cf
-```
-
 #### OpenMVS メインストリームのGitリポジトリ
 https://github.com/cdcseacave/openMVS.git
+
+#### ファイルコピーとビルド
+
+```
+cp /home/repos/3dsfm/dev_mvg/SceneTexture.cpp /home/repos/openMVS/libs/MVS/
+cd /home/repos/openMVS_build
+cmake . ../openMVS -DCMAKE_BUILD_TYPE=RELEASE -DVCG_ROOT="/home/repos/vcglib" -DBUILD_SHARED_LIBS=OFF -DOpenMVS_USE_CUDA=OFF -DOpenMVS_USE_BREAKPAD=OFF
+make -j2
+make install
+```
+
 #### ファイル変更内容
 SceneTexture.cpp:L576を編集。textureに使う画像サイズに制限をかける(textureに使用したい画像に応じて数字は編集)  
 
@@ -127,17 +92,6 @@ Image& imageData = images[idxView];
 			continue;
 		}
 	// load image
-```
-
-編集後、~/openMVS/libs/MVS/にコピー
-
-#### ビルド
-
-```
-cd /home/repos/openMVS_build
-cmake . ../openMVS -DCMAKE_BUILD_TYPE=RELEASE -DVCG_ROOT="/home/repos/vcglib" -DBUILD_SHARED_LIBS=OFF -DOpenMVS_USE_CUDA=OFF -DOpenMVS_USE_BREAKPAD=OFF
-make -j2
-make install
 ```
 
 ## 2.6. Meshlab 
@@ -166,7 +120,7 @@ MVGRELEASE="Linux-x86_64-RELEASE"
 上4行は使用するライブラリのフォルダに合わせて固定
 IMGDIRNAME="20200109-1-3_1"  #画像フォルダのフォルダ名
 再構成用画像のあるフォルダ名を入力 
-INPUT="/mnt/Jalife/ExperimentData/20200109-1/20200109-1-3_1" #画像フォルダへの絶対パス
+INPUT="/mnt/Share/ExperimentData/20200109-1/20200109-1-3_1" #画像フォルダへの絶対パス
 ```
  
 その後画像ファイルをコピーする  
@@ -175,7 +129,7 @@ INPUT="/mnt/Jalife/ExperimentData/20200109-1/20200109-1-3_1" #画像フォルダ
 /bin/bash copy.sh
 ```
 
-実行結果例
+**実行結果例**
 ```
 /bin/bash copy.sh
 ls /home/repos/openMVG_build/software/SfM/input/20200109-1-3_1/images/
@@ -231,6 +185,8 @@ data["Exif.Photo.PixelYDimension"] = 1080 #画像の縦サイズ
 ~/openMVG_build/software/SfM/input/20200109-1-3_1/images/OPTB*.jpg <= 高速度カメラB画像,  [カメラモデル]="SA4-512B"  
 ~/openMVG_build/software/SfM/input/20200109-1-3_1/images/OPTC*.jpg <= 高速度カメラC画像,  [カメラモデル]="Mini-512C"  
 
+**この時カメラモデルが3.2.で書き込んだモデルと一致させるように注意する**
+
 ## 3.4. カメラ内部パラメータの計算
 /home/repos/3dsfm/execute/calibrate.py  
 を実行して形状推定カメラ1台と高速度カメラ3台それぞれについて正方形のチェスパターン画像から内部パラメータを計算する。  
@@ -252,7 +208,8 @@ cd /home/repos/3dsfm/execute
 python calibrate.py [キャリブレーション画像フォルダへのパス]
 ```
 
-実行例  
+**実行例**  
+
 ```
 cd /home/repos/3dsfm/execute
 python calibrate.py /home/repos/openMVG_build/software/SfM/input/20200109-1-3_1/calib  #形状推定カメラキャリブレーション
@@ -304,7 +261,7 @@ executeフォルダに移動し以下のように実行
 
 すると  
 ~/openMVG_build/software/SfM/input/[フォルダ名]/out/matches/sfm_data.json  
-というファイルが生成される。  
+というファイルが生成される。このファイルは/home/repos/3dsfm/execute/にもコピーされる  
 実行結果例  
 ```
 /bin/bash imagelisting.sh
@@ -408,6 +365,8 @@ vi sfm_data.json
 ここで、"intrinsics"に書き込まれている4つの内部パラメータについてC0',C1',C2',C3'とする  
 
 **ここでは、3.4.で計算した内部パラメータC0,C1,C2,C3と"intrinsics"の内部パラメータC0',C1',C2',C3'の対応関係を求めたい**
+
+
 
 例  
 "views"に書き込まれている画像について"key"=0 の画像は"value"の"filename":"H00020.jpg"より形状推定カメラの画像であることがわかる
