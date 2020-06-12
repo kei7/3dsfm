@@ -94,7 +94,7 @@ RUN cd /home/repos/ceres_build && cmake . ../ceres-solver -DMINIGLOG=ON -DBUILD_
 
 #OpenMVS
 #RUN git clone https://github.com/thunders82/openMVS.git /home/repos/openMVS
-#RUN cd /home/repos/openMVS && git checkout 6bdc5ecbf45b540d408ded4592191dd30c3f69cf
+RUN cd /home/repos/openMVS && git checkout 6bdc5ecbf45b540d408ded4592191dd30c3f69cf
 RUN cd /home/repos/dev_mvg && git fetch && git pull
 RUN cp /home/repos/dev_mvg/SceneTexture.cpp /home/repos/openMVS/libs/MVS/
 RUN mkdir /home/repos/openMVS_build
