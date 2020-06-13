@@ -60,7 +60,7 @@ RUN cd ~
 
 #build openMVG
 RUN git clone --recursive https://github.com/openMVG/openMVG.git /home/repos/openMVG
-RUN git cd /home/repos/openMVG && checkout bbb1e7140ce6ccce1d63b27956db05440986959f
+RUN cd /home/repos/openMVG && checkout bbb1e7140ce6ccce1d63b27956db05440986959f
 RUN git clone https://github.com/thunders82/openMVS.git /home/repos/openMVS
 RUN cd /home/repos/openMVS && git checkout 6bdc5ecbf45b540d408ded4592191dd30c3f69cf
 
